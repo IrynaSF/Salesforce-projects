@@ -32,7 +32,7 @@ private class LwcTest{
 static void testGetInvoiceData_withPdf(){
     Opportunity opp = [SELECT Id, Name, Invoice_Number__c FROM Opportunity WHERE Name = 'Test Opp' LIMIT 1];
 String fileName = opp.Invoice_Number__c;
-//2,создать ContentVersion с PDF файлом прикреплённым к этой Opportunity
+//2. Create a ContentVersion with a PDF file attached to this Opportunity
   ContentVersion cv = new ContentVersion(
         Title                  = fileName,
         PathOnClient = fileName + '.pdf',
@@ -41,13 +41,13 @@ String fileName = opp.Invoice_Number__c;
     );
     insert cv;
 
-//3,вызвать метод контроллера
+//3. Call the controller method
 
 
 Test.startTest();
         Map<String, String> result = LwcController.getInvoiceData(opp.Id); 
     Test.stopTest();
-//4,проверить результат
+//4. Check the result
 
   Assert.isTrue(result.containsKey('contactName'),  'Should contain contactName key');
 Assert.isTrue(result.containsKey('contactEmail'),  'Should contain contactEmail key');

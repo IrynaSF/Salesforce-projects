@@ -1,21 +1,21 @@
 public class UniversalBatchScheduler implements Schedulable {
 
-    // Имя выбранного Batch — приходит из LWC
+    // Name of the selected Batch, comes from the LWC
     private String batchClassName;
 
-    // Конструктор — сохраняем имя класса
+    // Constructor: store the class name
     public UniversalBatchScheduler(String className) {
         this.batchClassName = className;
     }
 
-    // Salesforce вызывает этот метод по расписанию
+    // Salesforce calls this method on schedule
     public void execute(SchedulableContext ctx) {
-        // Находим класс по имени строки
+        // Find the class by its name string
         Type batchType = Type.forName(batchClassName);
-        // Создаём объект этого класса
+        // Create an instance of this class
         Database.Batchable<sObject> batch =
             (Database.Batchable<sObject>) batchType.newInstance();
-        // Запускаем Batch
+        // Run the Batch
         Database.executeBatch(batch, 200);
     }
 }

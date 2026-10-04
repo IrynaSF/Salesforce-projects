@@ -32,72 +32,72 @@ const PRODUCT_COLUMNS= [
 export default class SalesDashboard extends LightningElement {
     @api recordId;
     @track accountsData;
-     @track isModalOpen = false;     // Флаг для модального окна
-    selectedOppId;                 // ID выбранной Opportunity
-    @track products = [];          // Список товаров
-    currentPage = 1;  // Текущая страница пагинации
+     @track isModalOpen = false;     // Flag for the modal window
+    selectedOppId;                 // ID of the selected Opportunity
+    @track products = [];          // List of products
+    currentPage = 1;  // Current pagination page
     @track filteredAccounts = [];
     opportunityColumns = COLUMNS;
       columns = COLUMNS;
  productColumns = PRODUCT_COLUMNS;            
-// 2. Помечаем метод как async
+// 2. Mark the method as async
    
 async connectedCallback() {
-        console.log('--- Начало работы connectedCallback ---');
+        console.log('--- connectedCallback started ---');
 
 
         try {
             if (this.recordId) {
-                console.log('Загрузка данных для конкретного ID: ' + this.recordId);
-                // 3. Вызываем Apex через await
-                // Передаем параметры в виде объекта
+                console.log('Loading data for a specific ID: ' + this.recordId);
+                // 3. Call Apex with await
+                // Pass parameters as an object
                 this.accountsData= await getAccountData({ accountId: this.recordId});
                 this.filteredAccounts = this.accountsData;
-                console.log('Данные записи успешно получены:', this.accountsData);
+                console.log('Record data received successfully:', this.accountsData);
             } else {
-                console.log('recordId не найден. Загрузка общего списка...');
+                console.log('recordId not found. Loading the full list...');
                 this.accountsData = await getAllAccountsData()
                 this.filteredAccounts = this.accountsData;
-                console.log('Общий список успешно получен. Количество записей: ' + this.accountsData.length);
+                console.log('Full list received successfully. Number of records: ' + this.accountsData.length);
             }
         } catch (error) {
-            // 4. Обрабатываем ошибки (например, проблемы с правами доступа или сервером)
+            // 4. Handle errors (e.g. access rights or server issues)
             this.error = error;
-            console.error('Произошла ошибка при вызове Apex:', error);
+            console.error('An error occurred while calling Apex:', error);
         } finally {
-            console.log('--- Завершение выполнения connectedCallback ---');
+            console.log('--- connectedCallback finished ---');
         }
     }
 async handleShowProducts(event) {
-    console.log('--- Начало handleShowProducts ---');
+    console.log('--- handleShowProducts started ---');
 
 
     try {
-        // Шаг 1: Достаем Id из атрибута data-id элемента, на который нажали
+        // Step 1: get the Id of the clicked row
         const oppId = event.detail.row.Id;
-        console.log('Выбранный Opportunity ID:', oppId);
+        console.log('Selected Opportunity ID:', oppId);
 
 
-        // Шаг 2: Вызываем Apex метод getProducts и ждем результат (await)
-        // Передаем oppId в объект параметров
-        console.log('Запрос товаров с сервера...');
+        // Step 2: call the Apex method getProducts and wait for the result (await)
+        // Pass oppId in the parameters object
+        console.log('Requesting products from the server...');
 
 
        const rawProducts = await getProducts({ opportunityId: oppId });
 this.products = rawProducts.map(item => ({ ...item, productName: item.Product2.Name }));
 
 
-        console.log('Товары успешно загружены:', this.products);
+        console.log('Products loaded successfully:', this.products);
 
 
-        // Шаг 3: Открываем модальное окно
+        // Step 3: open the modal window
         this.isModalOpen = true;
-        console.log('Модальное окно открыто');
+        console.log('Modal window opened');
 
 
     } catch (error) {
-        // Обработка ошибок, если Apex вернул ошибку или сеть недоступна
-        console.error('Произошла ошибка при загрузке товаров:', error);
+        // Error handling in case Apex returned an error or the network is unavailable
+        console.error('An error occurred while loading products:', error);
     }
 }
 handleCloseModal() {
@@ -107,49 +107,49 @@ get isTabMode() {
     return !this.recordId;
 }
 handleSearch(event) {
-//1. Достать введённый текст из события — event.target.value
+//1. Get the entered text from the event: event.target.value
 const searchValue = event.target.value;
-     console.log('Достаем введенный текст из события');
-       // 2. Фильтруем оригинальный массив и ЗАПИСЫВАЕМ результат
-    // Мы берем исходные данные (this.accountsData) и результат фильтрации
-    // кладем в свойство, которое привязано к интерфейсу (this.filteredAccounts)
+     console.log('Getting the entered text from the event');
+       // 2. Filter the original array and STORE the result
+    // We take the source data (this.accountsData) and put the filtered result
+    // into the property bound to the UI (this.filteredAccounts)
     this.filteredAccounts = this.accountsData.filter(acc =>
         acc.accountName.toLowerCase().includes(searchValue)
     );
 
 
-    console.log('Список обновлен, найдено элементов:', this.filteredAccounts.length);
+    console.log('List updated, items found:', this.filteredAccounts.length);
 }
 get pagedAccounts() {
     const start = (this.currentPage - 1) * 10;
     const end =this.currentPage * 10;
     return this.filteredAccounts.slice(start, end);
 }
-// Переход на следующую страницу
+// Go to the next page
 handleNextPage() {
-    // Рассчитываем индекс последней страницы
-    // Math.ceil округляет результат деления в большую сторону
+    // Calculate the index of the last page
+    // Math.ceil rounds the division result up
     const maxPage = Math.ceil(this.filteredAccounts.length / 10);
 
 
     if (this.currentPage < maxPage) {
         this.currentPage += 1;
-        console.log('Переход на страницу:', this.currentPage);
+        console.log('Going to page:', this.currentPage);
     } else {
-        console.log('Это последняя страница, дальше нельзя');
+        console.log('This is the last page, cannot go further');
     }
 }
 
 
 
 
-// Переход на предыдущую страницу
+// Go to the previous page
 handlePrevPage() {
     if (this.currentPage > 1) {
         this.currentPage -= 1;
-        console.log('Переход на страницу:', this.currentPage);
+        console.log('Going to page:', this.currentPage);
     } else {
-        console.log('Вы на первой странице, назад нельзя');
+        console.log('You are on the first page, cannot go back');
     }
 }
 

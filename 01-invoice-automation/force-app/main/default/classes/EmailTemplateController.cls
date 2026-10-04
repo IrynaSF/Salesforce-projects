@@ -9,7 +9,7 @@ public with sharing class EmailTemplateController {
             LIMIT 1
         ];
 
-        // Получаем данные из Opportunity напрямую
+        // Get Opportunity data directly
         Opportunity opp = [
             SELECT Name, Amount, Invoice_Number__c,
                    Owner.Name
@@ -18,7 +18,7 @@ public with sharing class EmailTemplateController {
             LIMIT 1
         ];
 
-        // Получаем имя контакта
+        // Get the contact name
         String contactFirstName = '';
         List<OpportunityContactRole> ocrs = [
             SELECT Contact.FirstName, Contact.Name
@@ -31,12 +31,12 @@ public with sharing class EmailTemplateController {
             contactFirstName = ocrs[0].Contact.FirstName;
         }
 
-        // Рендерим subject через Salesforce merge
+        // Render the subject via Salesforce merge fields
         Messaging.RenderEmailTemplateBodyResult subjectResult =
             Messaging.renderEmailTemplate(null, recordId,
                 new List<String>{ et.Subject })[0];
 
-        // Строим body вручную — надёжно и без серых таблиц
+        // Build the body manually: reliable and without grey tables
         String invoiceNumber = opp.Invoice_Number__c != null ? opp.Invoice_Number__c : '';
         String oppName = opp.Name != null ? opp.Name : '';
         String amount = opp.Amount != null

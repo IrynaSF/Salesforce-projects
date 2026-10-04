@@ -25,7 +25,7 @@ export default class EmailEditor extends LightningElement {
             this.subject = result.subject;
             this.htmlBody = result.htmlBody;
         } catch (error) {
-            console.error('❌ Ошибка рендера шаблона:', error);
+            console.error('❌ Template rendering error:', error);
         } finally {
             this.isLoading = false;
         }

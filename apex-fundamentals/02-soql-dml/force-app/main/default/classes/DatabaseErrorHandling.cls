@@ -5,7 +5,7 @@ public class DatabaseErrorHandling {
         
         System.debug ('Befor insert:' + newDept);
         
-        //Создаем список из двух записей. 
+        // Create a list of two records.
         List<Employee__c> empls = new  List<Employee__c> ();
         
         Employee__c emplRicher = new Employee__c();
@@ -13,12 +13,12 @@ public class DatabaseErrorHandling {
         emplRicher.Department__c =newDept.Id;
         empls.add(emplRicher);
         
-        //С ошибкой. У кастомных объектов Name обязательно поле к заполнению .
+        // With an error: Name is required on custom objects.
         Employee__c emplMonica = new Employee__c();
         emplMonica.Department__c = newDept.Id;
         empls.add(emplMonica);
         
-        //С ошибкой.Неверно указан департмент. 
+        // With an error: the department is invalid.
         Employee__c emplBob = new Employee__c();
         emplBob.Name = 'Bob Test';
         emplBob.Department__c = '001000000000000AAA';
@@ -31,16 +31,16 @@ public class DatabaseErrorHandling {
     System.debug('Error inserting employees: ' + e.getMessage());
     }
         
-        //из https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_methods_system_database.htm
+        // from https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_methods_system_database.htm
         Database.SaveResult[] checkList = Database.insert(empls, false);
-        //// Перебор каждого полученного результата
+        //// Iterate over each result
         for (Database.SaveResult check : checkList){
             if (check.isSuccess()){
-                // Операция прошла успешно, поэтому получаем ID обработанной записи
+                // The operation succeeded, so get the ID of the processed record
                 System.debug('Successfully inserted employee. Employee__c ID: ' + check.getId());
                 
             }else{
-            // Операция завершилась неудачей, поэтому получаем все ошибки
+            // The operation failed, so get all the errors
             for(Database.Error err : check.getErrors()) {
             System.debug('The following error has occurred.');                    
             System.debug(err.getStatusCode() + ': ' + err.getMessage());

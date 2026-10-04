@@ -1,7 +1,7 @@
 public class LeadSourceBatch implements Database.Batchable<sObject> {
 
     public Database.QueryLocator start(Database.BatchableContext bc) {
-        // Находим Lead где LeadSource = null
+        // Find Leads where LeadSource = null
         return Database.getQueryLocator(
             'SELECT Id, Name, Status FROM Lead ' + 'WHERE LeadSource = null'
 
@@ -10,8 +10,8 @@ public class LeadSourceBatch implements Database.Batchable<sObject> {
     public void execute(Database.BatchableContext bc, List<Lead> scope) {
         // LeadSource = 'Other'
         // update scope
-        //for — обновляет поле у каждой записи в памяти
-//update — сохраняет все изменения в базу одним DML
+        // for: updates the field on each record in memory
+// update: saves all changes to the database with a single DML
         for(Lead lead : scope){
             lead.LeadSource = 'Other';
         }

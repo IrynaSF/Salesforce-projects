@@ -1,8 +1,8 @@
 public class AccountSummaryBatch implements Database.Batchable<sObject> {
 
     public Database.QueryLocator start(Database.BatchableContext bc) {
-        // SOQL — найди Account у которых
-        // нет активных Opportunity (IsClosed = false)
+        // SOQL: find Accounts that have
+        // no active Opportunities (IsClosed = false)
       return Database.getQueryLocator(
     'SELECT Id, Name FROM Account WHERE Id NOT IN ' +
     '(SELECT AccountId FROM Opportunity WHERE IsClosed = false)'
@@ -10,7 +10,7 @@ public class AccountSummaryBatch implements Database.Batchable<sObject> {
     }
 
     public void execute(Database.BatchableContext bc, List<Account> scope) {
-        // Для каждого Account:
+        // For each Account:
         // Description = 'No Active Deals - Follow Up Needed'
         // update scope
         for(Account acc : scope){

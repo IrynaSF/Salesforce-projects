@@ -15,7 +15,7 @@ public with sharing class OldNewHandlerTest {
         update oppTest;
         Test.stopTest();
 
-        //Заново получаем записи из организации, проверяем Stage Name. 
+        // Query the records from the org again and check the Stage Name.
         Opportunity oppUpdated = [
             SELECT StageName
              FROM Opportunity 

@@ -1,5 +1,5 @@
-<!-- "страница-запускалка кнопки">
- <!-- Эта страница пустая, она просто запускает метод и возвращает назад -->
+<!-- "button launcher page">
+ <!-- This page is empty: it just runs the method and redirects back -->
  
 <apex:page standardController="Opportunity" 
            extensions="InvController" 

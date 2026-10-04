@@ -13,8 +13,8 @@ static void setupTestData() {
         List<Account> result = ApiLwcController.getAccounts();
         Test.stopTest();
 
-        // 3. ПРОВЕРКА (Assert)
-        // Проверяем, что список не пустой и содержит наши данные
+        // 3. CHECK (Assert)
+        // Check that the list is not empty and contains our data
         System.assertEquals(2, result.size(), 'The list of accounts must not be empty.');
         System.assertEquals('TestAccountApi', result[0].Name, 'Account name mismatch');
     }

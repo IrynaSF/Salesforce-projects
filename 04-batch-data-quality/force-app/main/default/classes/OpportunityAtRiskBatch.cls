@@ -1,7 +1,7 @@
 public class OpportunityAtRiskBatch implements Database.Batchable<sObject> {
 
     public Database.QueryLocator start(Database.BatchableContext bc) {
-        // Найхлдим Opportunity где:
+        // Find Opportunities where:
         // IsClosed = false
         // LastActivityDate < LAST_N_DAYS:30
         return Database.getQueryLocator(

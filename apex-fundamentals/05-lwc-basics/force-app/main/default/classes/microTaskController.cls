@@ -1,12 +1,12 @@
 public with sharing class microTaskController {
-    //Метод возвращает первое имя акаунта которое найдет
-    //Перед getAccountName напиши String — потому что мы возвращаем имя аккаунта.
+    // The method returns the name of the first account it finds
+    // Write String before getAccountName because we return the account name.
     @AuraEnabled(cacheable=true)
     public static String getAccountName(){
 
-        //Выполняем SOQL запрос
+        // Run the SOQL query
 List<Account> acclist = [SELECT Name FROM Account  LIMIT 1];
- return accList[0].Name;// ваозвращаем имя акаунта обращаясь к первому элементу из списка через [0], а к полю через точку
+ return accList[0].Name;// return the account name: first element of the list via [0], the field via dot notation
 
     }
 }

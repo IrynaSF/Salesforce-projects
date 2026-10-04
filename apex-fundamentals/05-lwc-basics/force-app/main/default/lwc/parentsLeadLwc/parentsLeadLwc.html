@@ -1,5 +1,5 @@
 <template>
-  <!--Поле ввода https://developer.salesforce.com/docs/platform/lightning-component-reference/guide/lightning-record-picker.html?type=Develop-->
+  <!-- Input field https://developer.salesforce.com/docs/platform/lightning-component-reference/guide/lightning-record-picker.html?type=Develop -->
 <lightning-record-picker
     label="Enter Parent Name"
     placeholder="Search parents..."
@@ -8,7 +8,7 @@
 </lightning-record-picker>
 
 
-    <!--Текстовый статус — показывает количество найденных детей или сообщение об ошибке.-->
+    <!-- Text status: shows the number of children found or an error message. -->
     <p>{status}</p>
 
    <template lwc:if={children.length}>

@@ -1,5 +1,5 @@
 trigger ChildTrigger on Child__c (before insert) {
     ChildEmplManagerTriggerHandler.renameChildren(Trigger.new);
 }
-//этому методу обязательно нужны сами записи, которые сейчас создаются, потому что задача — изменить их поля (Name).
-// Без Trigger.new метод физически не может знать, какие записи менять — он получает их как параметр и работает именно с ними.
+// this method needs the records being created right now, because its job is to change their fields (Name).
+// Without Trigger.new the method has no way to know which records to change: it receives them as a parameter and works with them.

@@ -8,9 +8,9 @@ public class Test1 {
 //execute
 //List<Account> result = Test1.getAllAccounts();
 //System.debug(result);
-////Разбор
-//List<Account> result — мы объявляем новую переменную result, которая будет хранить список аккаунтов. 
-// Тип List<Account> нужен обязательно, потому что Apex — строго типизированный язык (в отличие от JS), и нужно явно сказать "что именно" будет лежать в этой переменной.
-// Test1.getAllAccounts() — здесь мы вызываем наш метод. Разберём почему именно так:
-//Test1 — это имя класса, где находится метод
-//.getAllAccounts() — обращение к методу через точку, как обычный вызов метода
+//// Breakdown
+//List<Account> result: we declare a new variable result that holds a list of accounts.
+// The List<Account> type is required because Apex is strongly typed (unlike JS), so we must state explicitly what the variable holds.
+// Test1.getAllAccounts(): here we call our method. Why it's written this way:
+//Test1 is the name of the class that contains the method
+//.getAllAccounts() calls the method with dot notation, like any method call

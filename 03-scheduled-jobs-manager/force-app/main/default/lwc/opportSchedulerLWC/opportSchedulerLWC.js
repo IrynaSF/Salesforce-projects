@@ -5,8 +5,8 @@ import abortScheduledJob from '@salesforce/apex/OpportSchedulerController.abortS
 
 export default class OpportSchedulerLWC extends LightningElement {
 
-    selectedTime  = '';  // время выбранное пользователем
-    @track resultMessage = ''; // сообщение которое видит пользователь
+    selectedTime  = '';  // time selected by the user
+    @track resultMessage = ''; // message shown to the user
 
     get timeOptions() {
         return [
@@ -17,23 +17,23 @@ export default class OpportSchedulerLWC extends LightningElement {
         ];
     }
 
-    // Загружаем статус при открытии — вместо @wire
+    // Load the status on open, instead of @wire
     async connectedCallback() {
-        const status = await getJobStatus();// вручную вызываем Apex
+        const status = await getJobStatus();// call Apex manually
         this.resultMessage = status;
     }
 
-    handleTimeChange(event) {  //сохраняет выбранное время
+    handleTimeChange(event) {  // stores the selected time
         this.selectedTime = event.detail.value;
     }
 
-    async handleLaunch() { //запускает job + обновляет статус
+    async handleLaunch() { // starts the job + refreshes the status
         try {
             const result = await startScheduledJob({
                 launchTime: this.selectedTime
             });
             this.resultMessage = result;
-            // Вручную вытягиваем свежий статус
+            // Manually fetch the fresh status
             const status = await getJobStatus();
             this.resultMessage = status;
         } catch(error) {
@@ -41,11 +41,11 @@ export default class OpportSchedulerLWC extends LightningElement {
         }
     }
 
-    async handleStop() { //запускает job + обновляет статус
+    async handleStop() { // stops the job + refreshes the status
         try {
             const result = await abortScheduledJob();
             this.resultMessage = result;
-            // Вручную вытягиваем свежий статус
+            // Manually fetch the fresh status
             const status = await getJobStatus();
             this.resultMessage = status;
         } catch(error) {

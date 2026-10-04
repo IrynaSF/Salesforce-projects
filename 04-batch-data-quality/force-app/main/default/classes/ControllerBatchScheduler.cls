@@ -1,6 +1,6 @@
 public with sharing class ControllerBatchScheduler {
 
-    // SOQL — ищет job по имени Batch
+    // SOQL: find the job by Batch name
     private static List<CronTrigger> findJobs(String batchName) {
         return [
             SELECT Id, State FROM CronTrigger
@@ -9,20 +9,20 @@ public with sharing class ControllerBatchScheduler {
         ];
     }
 
-    // Статус
+    // Status
 @AuraEnabled
 public static String getJobStatus(String batchName) {
-    // Добавь проверку
+    // Added a check
     if(String.isBlank(batchName)) return 'NOT STARTED';
     
     List<CronTrigger> jobs = findJobs(batchName);
     return jobs.isEmpty() ? 'NOT STARTED' : jobs[0].State;
 }
 
-    // Кнопка Launch
-    // batchName — имя Batch класса
-    // cronTime  — расписание
-    // Оба приходят из LWC через @api из App Builder
+    // Launch button
+    // batchName: Batch class name
+    // cronTime: schedule
+    // Both come from the LWC via @api from App Builder
     @AuraEnabled
     public static String startJob(String batchName, String cronTime) {
         String message = 'Scheduler started!';
@@ -37,7 +37,7 @@ public static String getJobStatus(String batchName) {
         return message;
     }
 
-    // Кнопка Stop
+    // Stop button
     @AuraEnabled
     public static String stopJob(String batchName) {
         String message = 'Scheduler stopped!';

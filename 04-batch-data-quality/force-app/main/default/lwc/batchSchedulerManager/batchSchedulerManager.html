@@ -3,7 +3,7 @@
                     icon-name="standard:apex_plugin">
         <div class="slds-p-around_medium">
 
-            <!-- 1. Выбор Batch класса -->
+            <!-- 1. Batch class selection -->
             <lightning-combobox
                 label="Select Batch"
                 value={selectedBatch}
@@ -12,7 +12,7 @@
                 onchange={handleBatchChange}>
             </lightning-combobox>
 
-            <!-- 2. Выбор времени запуска -->
+            <!-- 2. Launch time selection -->
             <lightning-combobox
                 label="Select Launch Time"
                 value={selectedTime}
@@ -21,7 +21,7 @@
                 onchange={handleTimeChange}>
             </lightning-combobox>
 
-            <!-- 3. Кнопки -->
+            <!-- 3. Buttons -->
             <div class="slds-m-top_medium">
                 <lightning-button
                     label="Launch"
@@ -37,7 +37,7 @@
                 </lightning-button>
             </div>
 
-            <!-- 4. Статус -->
+            <!-- 4. Status -->
             <div class="slds-m-top_medium">
                 <p><strong>Status:</strong> {jobStatus}</p>
             </div>

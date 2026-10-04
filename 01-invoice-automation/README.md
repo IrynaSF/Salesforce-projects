@@ -49,7 +49,8 @@ Opportunity record page
 
 ## Org setup required
 
-- Opportunity field `Invoice_Number__c` (Auto Number, e.g. `INV-000001`)
+Included: Opportunity field `Invoice_Number__c` (Auto Number `INV-{000000}`). Configure in the org:
+
 - Email Template `Invoice_Email_Template`
 - Quick actions on Opportunity for `generateInvoice` and `sendInvoiceModal`
 - Email Service pointing to `OrderConfirmationEmailHandler`

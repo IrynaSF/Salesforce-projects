@@ -4,7 +4,7 @@ private class EmailTemplateTest {
   @testSetup
 static void setupData() {
 
-    // EmailTemplate — setup объект, вставляем отдельно через System.runAs()
+    // EmailTemplate is a setup object, so insert it separately inside System.runAs()
     User u = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
     System.runAs(u) {
         EmailTemplate tmpl = new EmailTemplate(
@@ -19,11 +19,11 @@ static void setupData() {
         insert tmpl;
     }
 
-    // Non-setup объекты — вставляем после System.runAs()
+    // Non-setup objects are inserted after System.runAs()
     Account acc = new Account(Name = 'Test Acc');
     insert acc;
 
-        // Contact — FirstName = 'Alex', контроллер вставит его в "Dear Alex,".
+        // Contact: FirstName = 'Alex', the controller will put it into "Dear Alex,".
         Contact con = new Contact(
             FirstName = 'Alex',
             LastName  = 'Test',
@@ -31,8 +31,8 @@ static void setupData() {
         );
         insert con;
 
-        // Opportunity — Invoice_Number__c НЕ указываем, это Auto Number поле.
-        // Salesforce сам сгенерирует значение при insert.
+        // Opportunity: do NOT set Invoice_Number__c, it is an Auto Number field.
+        // Salesforce generates the value on insert.
         Opportunity opp = new Opportunity(
             Name      = 'Test Opp',
             StageName = 'Prospecting',
@@ -42,8 +42,8 @@ static void setupData() {
         );
         insert opp;
 
-        // OpportunityContactRole — связывает Contact с Opportunity.
-        // IsPrimary = true — контроллер ищет именно с этим условием.
+        // OpportunityContactRole links the Contact to the Opportunity.
+        // IsPrimary = true: the controller looks for exactly this condition.
         OpportunityContactRole ocr = new OpportunityContactRole(
             OpportunityId = opp.Id,
             ContactId     = con.Id,
@@ -52,13 +52,13 @@ static void setupData() {
         insert ocr;
     }
 
-    // ПОЗИТИВНЫЙ ТЕСТ — есть шаблон, контакт, все данные сделки
+    // POSITIVE TEST: template, contact and all deal data are present
     @isTest
     static void testGetRenderedTemplate_withContact() {
 
-        // Достаём Opportunity и сразу читаем Invoice_Number__c —
-        // это Auto Number поле, его значение  не знаем заранее,
-        // поэтому читаем реальное значение и используем его в assertions.
+        // Query the Opportunity and read Invoice_Number__c right away:
+        // it is an Auto Number field, so we don't know its value in advance,
+        // that's why we read the real value and use it in the assertions.
         Opportunity opp = [
             SELECT Id, Invoice_Number__c
             FROM Opportunity
@@ -73,21 +73,21 @@ static void setupData() {
         );
         Test.stopTest();
 
-        // Проверяем что метод вернул результат
+        // Check that the method returned a result
         Assert.isNotNull(result, 'Result map should not be null');
 
-        // Проверяем что оба ключа есть в Map
+        // Check that both keys are in the Map
         Assert.isTrue(result.containsKey('subject'),  'Should contain subject key');
         Assert.isTrue(result.containsKey('htmlBody'), 'Should contain htmlBody key');
 
-        // Проверяем subject
+        // Check subject
         Assert.isTrue(
             result.get('subject').contains('Test Opp'),
             'Subject should contain opportunity name'
         );
 
-        // Проверяем htmlBody
-        // Invoice_Number__c берём из переменной opp — реальное значение из базы
+        // Check htmlBody
+        // Invoice_Number__c comes from the opp variable: the real value from the database
         String body = result.get('htmlBody');
         Assert.isTrue(body.contains('Dear Alex'),           'Should contain contact first name');
         Assert.isTrue(body.contains(opp.Invoice_Number__c), 'Should contain invoice number');
@@ -95,16 +95,16 @@ static void setupData() {
         Assert.isTrue(body.contains('Test Opp'),            'Should contain opportunity name');
     }
 
-    // НЕГАТИВНЫЙ ТЕСТ — нет Primary Contact
-    // Проверяем что метод не падает а возвращает пустое имя
+    // NEGATIVE TEST: no Primary Contact
+    // Check that the method doesn't fail but returns an empty name
     @isTest
     static void testGetRenderedTemplate_withoutContact() {
 
-        // Берём существующий Account из setupData
+        // Take the existing Account from setupData
         Account acc = [SELECT Id FROM Account WHERE Name = 'Test Acc' LIMIT 1];
 
-        // Создаём Opportunity БЕЗ Invoice_Number__c — это Auto Number поле.
-        // Создаём БЕЗ OpportunityContactRole — это и есть наш негативный сценарий.
+        // Create an Opportunity WITHOUT Invoice_Number__c, it is an Auto Number field.
+        // Create it WITHOUT an OpportunityContactRole: this is our negative scenario.
         Opportunity oppNoContact = new Opportunity(
             Name      = 'No Contact Opp',
             StageName = 'Prospecting',
@@ -114,7 +114,7 @@ static void setupData() {
         );
         insert oppNoContact;
 
-        // Читаем реальное значение Invoice_Number__c которое Salesforce сгенерировал
+        // Read the real Invoice_Number__c value that Salesforce generated
         oppNoContact = [
             SELECT Id, Invoice_Number__c
             FROM Opportunity
@@ -128,12 +128,12 @@ static void setupData() {
         );
         Test.stopTest();
 
-        // Метод должен вернуть результат — не упасть с исключением
+        // The method must return a result, not throw an exception
         Assert.isNotNull(result, 'Result should not be null even without contact');
 
         String body = result.get('htmlBody');
 
-        // contactFirstName будет '' — приветствие будет "Dear ,"
+        // contactFirstName will be '', so the greeting will be "Dear ,"
         Assert.isTrue(
             body.contains('Dear ,'),
             'Should handle missing contact gracefully with empty name'

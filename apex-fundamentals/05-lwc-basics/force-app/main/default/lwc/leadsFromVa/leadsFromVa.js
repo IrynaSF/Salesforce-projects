@@ -3,50 +3,50 @@ import getVirginiaLeads from '@salesforce/apex/LeadsFromVaController.getVirginia
 
 export default class LeadsFromVa extends LightningElement {
 
-    //Пишем наши перенные
-@track status = ''; //переменная для хранения текста
-@track leads = [];  // пустой массив, в который мы сами записываем данные внутри третьего .then() после того как Apex вернул результат.
-@track hasLeads = false; // просто булево значение (true/false), которое контролирует видимость блока lwc:if={hasLeads} в HTML.
-// Когда данные загружены — мы пишем this.hasLeads = true, и HTML сам реагирует на это изменение.
+    // Our variables
+@track status = ''; // variable holding the text
+@track leads = [];  // empty array that we fill ourselves inside the third .then() after Apex returns the result.
+@track hasLeads = false; // a simple boolean (true/false) that controls the visibility of the lwc:if={hasLeads} block in the HTML.
+// When the data is loaded we set this.hasLeads = true, and the HTML reacts to the change.
 
-handleLoad() { //Объявление метода — он запустится, когда пользователь нажмёт кнопку - (имя метода выбрали потому что в HTML написано onclick={handleLoad})
+handleLoad() { // Method declaration: it runs when the user clicks the button (named this way because the HTML has onclick={handleLoad})
 
-this.status = 'Loading...'; //показываем пользователю, что процесс начался, пока мы ждём ответа от сервера.(Наш <p>{status}</p> в HTML )
+this.status = 'Loading...'; // show the user the process has started while we wait for the server (our <p>{status}</p> in the HTML)
 
-//Вызываем Apex метод — он уходит на сервер, делает SOQL запрос, ищет лидов из Вирджинии. Возвращает Promise — не сразу данные, а "обещание", что данные придут позже.
+// Call the Apex method: it goes to the server, runs the SOQL query and finds the Virginia leads. It returns a Promise, not the data itself but a "promise" that data will arrive later.
 getVirginiaLeads()
 
-//Принимаем список лидов, который вернул Apex.
-//Срабатывает, когда Apex ответил успешно. rawLeads — это список лидов, которые вернул Apex (в "сыром", необработанном виде).
-.then(rawLeads => { //rawLeads - сырые лиды
-    console.log('Received leads:', rawLeads.length);//Выводим в консоль количество полученных лидов — просто для проверки, что данные реально пришли.
+// Receive the list of leads returned by Apex.
+// Runs when Apex responds successfully. rawLeads is the list of leads returned by Apex (raw, unprocessed).
+.then(rawLeads => { // rawLeads: raw leads
+    console.log('Received leads:', rawLeads.length);// Log the number of leads received, just to check the data actually arrived.
     return rawLeads;
 })
 
-//Передаем список дальше
-    .then(leads => { //leads потому что мы их обрабатываем сдесь 
-                // Второй .then принимает данные из предыдущего блока
-                //map() проходит по каждому лиду в списке, и для каждого создаёт новый объект — результат сохраняется в formattedLeads (новый массив, оригинал leads не трогается).
+// Pass the list on
+    .then(leads => { // called leads because we process them here
+                // The second .then receives the data from the previous block
+                // map() goes over each lead and creates a new object for it; the result goes into formattedLeads (a new array, the original leads is untouched).
 
                 const formattedLeads = leads.map(lead => {
                     return {
-                        //...lead — копируем все существующие поля этого лида (Id, FirstName, LastName, Status) через spread
+                        //...lead: copy all existing fields of this lead (Id, FirstName, LastName, Status) with the spread operator
                         ...lead, 
-                        fullName: `${lead.FirstName} ${lead.LastName}`//**добавляем** новое поле, соединяя имя и фамилию через **template literal** (строка с `` и${}`).
+                        fullName: `${lead.FirstName} ${lead.LastName}`//**add** a new field joining first and last name with a **template literal** (a string with `` and ${}).
                     };
                 })
                 
-                // Передаём новый, отформатированный список (с добавленным fullName у каждого лида) дальше, в следующий .then()
+                // Pass the new, formatted list (with fullName added to each lead) on to the next .then()
                 return formattedLeads;
         })
 
-        //Получает formattedLeads — отформатированный список лидов (с добавленным полем fullName), который вернул второй .then().
+        // Receives formattedLeads, the formatted list of leads (with the added fullName field) returned by the second .then().
            .then(formattedLeads => {
-            //Записываем готовый список в @track leads — благодаря реактивности, HTML автоматически обновится, и for:each={leads} начнёт показывать данные.
+            // Store the final list in @track leads: thanks to reactivity, the HTML updates automatically and for:each={leads} starts showing data.
     this.leads = formattedLeads;
-    ///Переключаем "флаг" в true — это включает видимость блока <template lwc:if={hasLeads}> в HTML, который раньше был скрыт.
+    /// Set the "flag" to true: this shows the <template lwc:if={hasLeads}> block in the HTML, which was hidden before.
     this.hasLeads = true;
-    //Обновляем текст статуса — теперь он показывает точное количество найденных лидов
+    // Update the status text: it now shows the exact number of leads found
     this.status = 'Found ' + formattedLeads.length + ' leads from Virginia'; 
 })
       
@@ -55,5 +55,5 @@ getVirginiaLeads()
 }
 
 }
-//Template literals (шаблонные литералы) — это синтаксис для создания строк в JavaScript, которые заключаются в обратные кавычки (``) вместо одинарных или двойных.
-// // Они значительно упрощают работу со строками, предоставляя две ключевые возможности: внедрение выражений и многострочность.
+// Template literals are JavaScript syntax for strings enclosed in backticks (``) instead of single or double quotes.
+// // They make working with strings much easier with two key features: embedded expressions and multi-line strings.

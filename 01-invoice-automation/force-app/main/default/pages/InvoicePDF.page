@@ -1,66 +1,66 @@
 <apex:page standardController="Opportunity" extensions="VisualController" renderAs="pdf" applyBodyTag="false">
     <head>
-       // 2. Слой стилей 
+       // 2. Styles layer
        <style>
-            /* Настройки печатного листа A4 */
+            /* A4 print sheet settings */
             @page {
-                size: A4; /* Формат бумаги */
-                margin: 0; /* Убираем поля, чтобы оранжевая полоса вверху прилегала к краям */
+                size: A4; /* Paper format */
+                margin: 0; /* Remove margins so the orange bar at the top touches the edges */
                 
-                /* Специальная область внизу страницы для футера */
+                /* Special area at the bottom of the page for the footer */
                 @bottom-center {
-                    /* content: Выводит текст внизу каждой страницы PDF */
+                    /* content: prints text at the bottom of every PDF page */
                     content: "Company: {!companyInfo.Name}"; 
                     font-size: 10pt;
-                    color: #808080; /* Серый цвет текста */
+                    color: #808080; /* Grey text color */
                 }
             }
             
-            /* Базовый шрифт и сброс отступов для всего документа */
+            /* Base font and reset of spacing for the whole document */
             body { font-family: sans-serif; margin: 0; padding: 0; }
 
-            /* Оранжевая декоративная полоса в самом верху (как на картинке в задании) */
+            /* Orange decorative bar at the very top (as in the task mockup) */
             .header-bar { background-color: #FF5722; height: 20px; width: 100%; }
 
-            /* Контейнер для контента с внутренними отступами от краев листа */
+            /* Content container with inner padding from the page edges */
             .content { padding: 40px; }
 
-            /* Блок ЛОГО: серый круг с белым текстом посередине */
+            /* LOGO block: grey circle with white text in the middle */
             .logo-circle { 
                 background: #777; 
                 color: white; 
                 width: 60px; 
                 height: 60px; 
-                border-radius: 50%; /* Делает квадрат круглым */
+                border-radius: 50%; /* Makes the square round */
                 text-align: center; 
-                line-height: 60px; /* Центрирует текст внутри по вертикали */
+                line-height: 60px; /* Centers the text vertically */
                 font-size: 10pt;
             }
 
-            /* Заголовок INVOICE: большой, серый, прижат к правому краю */
+            /* INVOICE title: large, grey, aligned to the right edge */
             .invoice-title { text-align: right; color: #777; font-size: 24pt; margin: 0; }
             
-            /* Стили для таблиц: растягиваем на всю ширину и убираем двойные рамки */
+            /* Table styles: full width and no double borders */
             table { width: 100%; border-collapse: collapse; margin-top: 30px; }
             
-            /* Шапка таблицы: оранжевый фон, белый жирный текст */
+            /* Table header: orange background, bold white text */
             th { background-color: #FF5722; color: white; padding: 10px; text-align: left; }
             
-            /* Ячейки таблицы: отступы и тонкая линия снизу для разделения товаров */
+            /* Table cells: padding and a thin bottom line to separate products */
             td { padding: 10px; border-bottom: 1px solid #eee; }
             
-            /* Розовый блок для итоговой суммы (Balance Due) */
+            /* Pink block for the total amount (Balance Due) */
             .balance-box { 
-                float: right; /* Сдвигает весь блок вправо */
+                float: right; /* Moves the whole block to the right */
                 margin-top: 20px; 
-                background-color: #F8D7DA; /* Светло-розовый фон */
+                background-color: #F8D7DA; /* Light pink background */
                 padding: 10px 20px; 
                 font-weight: bold; 
                 font-size: 16pt;
             }
         </style >
     </head>
- // 3.«фундамент» шапки  инвойса.
+ // 3. The "foundation" of the invoice header.
     <div class="header-bar"></div>
     
     <div class="content">
@@ -73,14 +73,14 @@
                         {!companyInfo.Street}, {!companyInfo.City}
                     </p>
                 </td>
-                //4.Правая часть «шапки»
+                //4. Right part of the header
                 <td style="border:none; text-align:right; vertical-align:top;">
                     <h1 class="invoice-title">INVOICE</h1>
                     <p>DATE:<apex:outputText value="{0, date, MMMM d, yyyy}">
         <apex:param value="{!generationDate}" />
     </apex:outputText>
 </p>
-        // 5.номер инвойса            
+        // 5. Invoice number
         <p><strong>INVOICE NO. {!opp.Invoice_Number__c}</strong></p>
                 </td>
             </tr>
@@ -97,7 +97,7 @@
             </p>
         </div>
      
-        // 7.таблица со списком товаров
+        // 7. Product list table
         <table>
             <thead>
                 <tr>
@@ -108,7 +108,7 @@
                 </tr>
             </thead>
             <tbody>
-                //8.Visualforce превращает список данных из Apex в аккуратные строки инвойса
+                //8. Visualforce turns the list of data from Apex into neat invoice rows
                 <apex:repeat value="{!lineItems}" var="item">
                     <tr>
                         <td>{!item.PricebookEntry.Product2.Name}</td>

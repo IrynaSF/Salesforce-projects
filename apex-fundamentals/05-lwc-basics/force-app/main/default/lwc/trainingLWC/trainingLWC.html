@@ -1,9 +1,9 @@
 <template>
    
-    <!--для статуса-->
+    <!-- for the status -->
     <p>{status}</p>
 
-    <!--для вывода списка Training записей -->
+    <!-- to display the list of Training records -->
       <template lwc:if={trainings.data}>
                 <template for:each={trainings.data} for:item="training">
                     <div key={training.Id} class="slds-box slds-var-m-bottom_small">
@@ -11,7 +11,7 @@
                         <p><strong>Course:</strong> {training.Course_Name__c}</p>
                         <p><strong>Status:</strong> {training.Status__c}</p>
 
-                        <!--Кнопка для изменения статуса по одному на каждую запись-->
+                        <!-- Button to change the status, one per record -->
     <lightning-button variant="brand"
      label="Mark as Completed" 
       data-id={training.Id}

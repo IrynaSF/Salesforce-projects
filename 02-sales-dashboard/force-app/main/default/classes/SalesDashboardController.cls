@@ -8,14 +8,14 @@ public class AccountWrapper {
     @AuraEnabled public List<Opportunity> opportunities;
 
 
-    // конструктор принимает один аккаунт
+    // the constructor takes a single account
     public AccountWrapper(Account acc) {
         this.accountId   = acc.Id;
         this.accountName = acc.Name;
         this.opportunities = acc.Opportunities;
 
 
-        // считаем сумму в цикле
+        // sum the amounts in a loop
         Decimal total = 0;
         for ( Opportunity opp : acc.Opportunities) {
             if (opp.Amount != null) {
@@ -26,9 +26,9 @@ public class AccountWrapper {
     }
 }
     @AuraEnabled(cacheable=true)
-    public static List<AccountWrapper> getAllAccountsData(){//Данные для Tab режима
+    public static List<AccountWrapper> getAllAccountsData(){// Data for Tab mode
         List<AccountWrapper> result = new List<AccountWrapper>();
-           // Аккаунты + их закрытые сделки с нужными полями
+           // Accounts + their won deals with the required fields
         List<Account> accsWithOpps = [
             SELECT Id,Name,
                    (SELECT Id,Name, CreatedDate, CloseDate, Amount
@@ -49,7 +49,7 @@ public class AccountWrapper {
    
     }
     @AuraEnabled(cacheable=true)
-  public static  AccountWrapper getAccountData(Id accountId){//данные для Account Page режима
+  public static  AccountWrapper getAccountData(Id accountId){// data for Account Page mode
  Account acc = [SELECT Id, Name,(SELECT Id, Name, CreatedDate, CloseDate, Amount
                     FROM Opportunities
                     WHERE IsClosed = true AND IsWon = true) FROM Account WHERE Id = :accountId LIMIT 1];
@@ -57,7 +57,7 @@ public class AccountWrapper {
             return new AccountWrapper(acc);
          }
          @AuraEnabled(cacheable=true)
-         public static List<OpportunityLineItem> getProducts(Id opportunityId){//товары для модального окна
+         public static List<OpportunityLineItem> getProducts(Id opportunityId){// products for the modal window
             List<OpportunityLineItem> products = [SELECT Id, Product2Id, Product2.Name, OpportunityId, TotalPrice
             FROM OpportunityLineItem
             WHERE OpportunityId = :opportunityId];

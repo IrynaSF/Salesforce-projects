@@ -2,8 +2,8 @@ import { LightningElement } from 'lwc';
 
 export default class StudentList extends LightningElement {
 
-    // Переменная класса — хранит список студентов
-    // Каждый студент это объект с полями: id, name, grade, active
+    // Class property: holds the list of students
+    // Each student is an object with the fields id, name, grade, active
     students = [
         { id: 1, name: 'Linda', grade: 85, active: true  },
         { id: 2, name: 'Bob',   grade: 42, active: false },
@@ -11,76 +11,76 @@ export default class StudentList extends LightningElement {
     ];
 
     // ─────────────────────────────────────────
-    // Метод 1 — Добавить нового студента
-    // Вызывается когда нажали кнопку "Add David"
+    // Method 1: add a new student
+    // Called when the "Add David" button is clicked
     // ─────────────────────────────────────────
     handleAdd() {
-        // Создаём объект нового студента
-        // const — нельзя переназначить, живёт только в этом методе
+        // Create the new student object
+        // const: can't be reassigned, lives only in this method
         const newStudent = { id: 4, name: 'David', grade: 75, active: true };
 
-        // [...this.students] — копируем всех существующих студентов
-        // newStudent — добавляем Дэвида в конец копии
-        // this.students = — присваиваем НОВЫЙ массив → LWC видит изменение
+        // [...this.students]: copy all existing students
+        // newStudent: add David to the end of the copy
+        // this.students = : assign a NEW array → LWC sees the change
         this.students = [...this.students, newStudent];
 
-        // Выводим в консоль весь массив после добавления
+        // Log the whole array after adding
         console.log('handleAdd:', this.students);
     }
 
     // ─────────────────────────────────────────
-    // Метод 2 — Удалить студента по id
-    // Вызывается когда нажали кнопку "Delete"
-    // event — объект события, содержит данные о нажатой кнопке
+    // Method 2: delete a student by id
+    // Called when the "Delete" button is clicked
+    // event: the event object, contains data about the clicked button
     // ─────────────────────────────────────────
     handleDelete(event) {
-        // event.target — кнопка которую нажали
-        // .dataset.id — читаем атрибут data-id с кнопки
-        // Number() — конвертируем строку '2' в число 2
+        // event.target: the button that was clicked
+        // .dataset.id: read the data-id attribute from the button
+        // Number(): convert the string '2' to the number 2
         const idToDelete = Number(event.target.dataset.id);
 
-        // filter() — проходит по каждому студенту
-        // оставляет только тех у кого id НЕ совпадает с idToDelete
-        // создаёт НОВЫЙ массив без удалённого студента
+        // filter(): goes over each student
+        // keeps only those whose id does NOT match idToDelete
+        // creates a NEW array without the deleted student
         this.students = this.students.filter(student => student.id !== idToDelete);
 
-        // Выводим в консоль массив после удаления
+        // Log the array after deletion
         console.log('handleDelete:', this.students);
     }
 
     // ─────────────────────────────────────────
-    // Метод 3 — Обновить оценку у Linda на 95
-    // Вызывается когда нажали кнопку "Update Linda"
+    // Method 3: update Linda's grade to 95
+    // Called when the "Update Linda" button is clicked
     // ─────────────────────────────────────────
     handleUpdate() {
-        // map() — проходит по каждому студенту
-        // создаёт НОВЫЙ массив с изменениями
-        // тернарный оператор ? : — если Linda → меняем, иначе → оставляем
+        // map(): goes over each student
+        // creates a NEW array with the changes
+        // ternary operator ? : if Linda → change, otherwise → keep
         this.students = this.students.map(student =>
-            // student.name === 'Linda' — проверяем текущего студента
+            // student.name === 'Linda': check the current student
             student.name === 'Linda'
-                // true → { ...student } копируем все поля, grade: 95 перезаписываем оценку
+                // true → { ...student } copy all fields, grade: 95 overwrites the grade
                 ? { ...student, grade: 95 }
-                // false → возвращаем студента без изменений
+                // false → return the student unchanged
                 : student
         );
 
-        // Выводим в консоль массив после обновления
+        // Log the array after the update
         console.log('handleUpdate:', this.students);
     }
 
     // ─────────────────────────────────────────
-    // Метод 4 — Отсортировать студентов по оценке
-    // Вызывается когда нажали кнопку "Sort by Grade"
+    // Method 4: sort students by grade
+    // Called when the "Sort by Grade" button is clicked
     // ─────────────────────────────────────────
     handleSort() {
-        // [...this.students] — создаём КОПИЮ массива
-        // .sort() — сортируем копию, оригинал не трогаем
-        // (a, b) — два соседних студента для сравнения
-        // b.grade - a.grade — положительное число → b перед a → убывание
+        // [...this.students]: create a COPY of the array
+        // .sort(): sort the copy, the original is untouched
+        // (a, b): two neighbouring students to compare
+        // b.grade - a.grade: a positive number → b before a → descending
         this.students = [...this.students].sort((a, b) => b.grade - a.grade);
 
-        // Выводим в консоль массив после сортировки
+        // Log the array after sorting
         console.log('handleSort:', this.students);
     }
 }

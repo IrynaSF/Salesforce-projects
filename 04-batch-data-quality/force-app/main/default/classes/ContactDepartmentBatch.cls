@@ -1,8 +1,8 @@
 public class ContactDepartmentBatch implements Database.Batchable<sObject> {
 
     public Database.QueryLocator start(Database.BatchableContext bc) {
-        // Найди Contact где Department = null
-        // (нет отдела — нужно проверить)
+        // Find Contacts where Department = null
+        // (no department: needs review)
             return Database.getQueryLocator(
     'SELECT Id, LastName FROM Contact WHERE Department = null '
 );

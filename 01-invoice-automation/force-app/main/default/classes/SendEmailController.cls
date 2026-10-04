@@ -17,7 +17,7 @@ public with sharing class SendEmailController {
         mail.setSaveAsActivity(true);
         mail.setOptOutPolicy('FILTER');
 
-        // Прикрепляем PDF если есть
+        // Attach the PDF if there is one
         if (contentDocumentId != null && contentDocumentId != '') {
             List<ContentVersion> cvList = [
                 SELECT VersionData, Title, FileExtension

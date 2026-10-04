@@ -3,10 +3,10 @@
                     icon-name="standard:process">
         <div class="slds-p-around_medium">
 
-            <!-- 1. Количество jobs -->
+            <!-- 1. Number of jobs -->
             <p>Total active jobs: {totalJobs}</p>
 
-            <!-- 2. Список jobs -->
+            <!-- 2. List of jobs -->
            <template for:each={formattedJobs} for:item="job">
     <div key={job.Id} class="slds-box slds-m-bottom_small">
         <p>Name: {job.jobName}</p>
@@ -16,7 +16,7 @@
     </div>
 </template>
 
-            <!-- 3. Если нет jobs -->
+            <!-- 3. If there are no jobs -->
             <template if:true={isEmpty}>
                 <p>No active scheduled jobs</p>
             </template>

@@ -19,7 +19,7 @@ Hands-on Salesforce projects built in a Developer Edition org between January an
 
 Also included:
 
-- **[Flow Automation](flows)**: record-triggered Flows built in Flow Builder (lead rating, website auto-fill, task creation, product on lead conversion).
+- **[Flow Automation](flows)**: record-triggered Flows built in Flow Builder (lead rating, website auto-fill, task creation, product on lead conversion), included as Flow metadata.
 - **[Apex Fundamentals](apex-fundamentals)**: smaller exercises on Apex syntax, SOQL/DML, triggers and handler pattern, sharing model, and core LWC concepts (`@api`, `@track`, `@wire`, promises, pagination).
 - **[Archive](archive)**: earlier iterations of the invoice and currency projects, kept to show how the solutions evolved.
 
@@ -34,23 +34,29 @@ Also included:
 │   └── force-app/main/default/
 │       ├── classes/              Apex classes + tests
 │       ├── lwc/                  Lightning Web Components
+│       ├── objects/              custom objects and fields
 │       ├── pages/                Visualforce pages
 │       └── triggers/
 ├── 02-sales-dashboard/
 ├── ...
 ├── apex-fundamentals/            learning exercises grouped by topic
-├── flows/                        Flow Builder automation (documentation)
+├── flows/                        Flow Builder automation
 ├── archive/                      earlier iterations
 └── sfdx-project.json             lists every project as a package directory
 ```
 
 ## Deploying
 
-The source was retrieved from a Developer Edition org. Apex classes, triggers, Visualforce pages and LWCs are included. Custom objects, fields, Custom Metadata records and Named Credentials are described in each project's README and need to exist in the target org before deploying.
+The source was retrieved from a Developer Edition org: Apex classes, triggers, Visualforce pages, LWCs, custom objects and fields, Custom Metadata Types and Flows. Org-specific configuration is **not** included and is listed in each project's README: Custom Metadata *records* (they hold API keys), Named Credentials, Email Templates, Email Services, quick actions and static resources.
 
 ```bash
 sf org login web --alias my-dev-org
+
+# deploy a single project
 sf project deploy start --source-dir 05-weather-widget/force-app --target-org my-dev-org
+
+# the fundamentals share one data model, deploy it first
+sf project deploy start --source-dir apex-fundamentals/00-data-model/force-app --target-org my-dev-org
 ```
 
 > **Security note:** no credentials are stored in this repository. API keys are read at runtime from Custom Metadata records (`Weather_Setting__mdt`, `Currency_Setting__mdt`) that are configured in the org and not committed here. Endpoints are resolved through Named Credentials (`callout:...`).

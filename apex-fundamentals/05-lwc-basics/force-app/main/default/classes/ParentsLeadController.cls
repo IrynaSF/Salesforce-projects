@@ -2,7 +2,7 @@ public with sharing class ParentsLeadController {
  @AuraEnabled(cacheable=true)
 public static ChildrenPageResult getChildrenByParent(Id parentId, Integer pageNumber) {
 
-     //Получаем pageSize из Custom Metadata
+     // Get pageSize from Custom Metadata
     
         Pagination_Setting__mdt setting = [
             SELECT Page_Size__c 
@@ -12,7 +12,7 @@ public static ChildrenPageResult getChildrenByParent(Id parentId, Integer pageNu
 
        Integer pageSize = Integer.valueOf(setting.Page_Size__c);
 
-       //Считаем offset. 
+       // Calculate the offset.
        Integer offsetValue = pageNumber * pageSize;
 
         List<ParentsLead__c> parents = [
@@ -31,7 +31,7 @@ public static ChildrenPageResult getChildrenByParent(Id parentId, Integer pageNu
              LIMIT 1
         ];
 
-        //запрос для общего количества
+        // query for the total count
         Integer totalChildren = [SELECT COUNT() FROM ChildrenLead__c WHERE ParentsLead__c = :parentId];
 
 

@@ -1,9 +1,9 @@
-//@track нужен, чтобы LWC следил за переменной и автоматически обновлял страницу при её изменении
+//@track makes LWC watch the variable and re-render the page automatically when it changes
 import { LightningElement, track} from 'lwc';
 
 export default class ExternalApiCall  extends LightningElement {
 
-    //Пишем наши переменные
+    // Our variables
  @track status;
  @track userData;
  @track hasData;
@@ -12,13 +12,13 @@ handleClick(){
 this.status = 'Fetching data...';
 
 fetch('https://jsonplaceholder.typicode.com/users/1')
-    .then(response => response.json()) //response.json() возвращает новый Promise — потому что парсинг JSON (превращение "сырого" текста ответа в JavaScript объект) — это тоже асинхронная операция,
-    // требующая времени. стрелочная функция response => response.json() автоматически возвращает результат — этот новый Promise передаётся следующему .then() в цепочке.
-    //Второй .then(data => {...}) — дожидается, пока этот Promise выполнится, и получает уже готовые, распарсенные данные в параметр data.
+    .then(response => response.json()) // response.json() returns a new Promise, because parsing JSON (turning raw response text into a JavaScript object) is also asynchronous,
+    // and takes time. The arrow function response => response.json() returns the result automatically, and this new Promise is passed to the next .then() in the chain.
+    // The second .then(data => {...}) waits for that Promise and receives the ready, parsed data in the data parameter.
     
     .then(data => {
-        this.userData = data;//Записываем полученные данные в нашу @track переменную userData
-        this.hasData = true;//Переключаем "флаг" в true — это включает видимость блока <template lwc:if={hasData}> в HTML 
+        this.userData = data;// Store the received data in our @track variable userData
+        this.hasData = true;// Set the "flag" to true: this shows the <template lwc:if={hasData}> block in the HTML
         this.status = 'Data loaded successfully!';
     })
     .catch(error => {
@@ -46,12 +46,12 @@ fetch('https://jsonplaceholder.typicode.com/users/1')
 
 
 
-// добавить т сайт как Trusted Site
-//Setup → поиск  CSP Trusted Sites
+// add the site as a Trusted Site
+// Setup → search for CSP Trusted Sites
 //New  CSP Trusted Sites
-//Нажимаем кнопку "New Trusted URL" (видно справа сверху таблицы)
-//Trusted Site Name — например RestCountries
+// Click "New Trusted URL" (top right of the table)
+// Trusted Site Name, e.g. RestCountries
 //Trusted Site URL — https://restcountries.com
-//Отмечаем Active
-//В разделе Context — отмечаем Connect-src (ставим галочку)
+// Check Active
+// In the Context section, check Connect-src
 //Save

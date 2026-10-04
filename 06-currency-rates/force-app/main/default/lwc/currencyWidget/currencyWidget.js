@@ -4,13 +4,13 @@ import getBaseCurrencyOptions from '@salesforce/apex/CurrencyRatesCalculator.get
 import sendLogToLWC from '@salesforce/apex/CurrencyRatesCalculator.sendLogToLWC';
 export default class CurrencyWidget extends LightningElement {
 
-    //Шаг 1: здесь мы объявляем реактивные переменные класса, с которыми будем работать во всём компоненте
+    // Step 1: declare the reactive class properties used throughout the component
 
-    selectedCurrency = 'USD';//переменная, которая хранит текущую выбранную пользователем валюту
-    currencyRates;//Здесь будет храниться результат пересчёта
-    updateDateTime;//Сюда попадёт дата и время последнего обновления курсов
-    status;//Сюда попадёт статус последнего обновления 
-    selectedDate;//Сюда попадёт выбранная пользователем дата из календаря
+    selectedCurrency = 'USD';// holds the currency currently selected by the user
+    currencyRates;// holds the recalculation result
+    updateDateTime;// date and time of the last rates update
+    status;// status of the last update
+    selectedDate;// date selected by the user in the calendar
     calendarRates;
     calendarUpdateDateTime;
     calendarStatus;
@@ -20,7 +20,7 @@ columns = [
     { label: 'Rate', fieldName: 'rate', type: 'number', cellAttributes: { alignment: 'left' } }
 ];
 
-    //Шаг 2: используем декоратор @wire для вызова метода Apex и получения данных о курсах валют
+    // Step 2: use the @wire decorator to call the Apex method and get the currency rates
 
     @wire(getCurrencyRatesCalculator, { selectedCurrency: '$selectedCurrency' })
     wiredCurrencyRates({ error, data }) {
@@ -32,13 +32,13 @@ columns = [
             console.error('Error fetching currency rates:', error);
         }
     }
-    //Шаг 3: создаём метод, который будет вызываться при изменении выбранной валюты пользователем. 
-    //Этот метод обновляет переменную selectedCurrency, что в свою очередь вызывает повторный вызов метода Apex через декоратор @wire.
+    // Step 3: a method called when the user changes the selected currency.
+    // It updates selectedCurrency, which in turn re-runs the Apex method through @wire.
     
    handleCurrencyChange(event) {
     this.selectedCurrency = event.detail.value;
 }
-//Шаг 4: создаём массив с доступными валютами, который будет использоваться в шаблоне для отображения выпадающего списка.
+// Step 4: an array of available currencies used in the template for the dropdown.
 
 @wire(getBaseCurrencyOptions) rawCurrencyOptions;
 
@@ -47,7 +47,7 @@ get currencyOptions() {
 }
 
 
-//Шаг 5: создаём геттер, который будет возвращать массив объектов с кодами валют и их курсами относительно выбранной пользователем валюты.
+// Step 5: a getter that returns an array of objects with currency codes and their rates against the user's selected currency.
 get displayRates() {
     if (this.selectedDate) {
         return this.formatRatesForTable(this.calendarRates);

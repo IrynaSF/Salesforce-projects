@@ -1,11 +1,11 @@
 public class DataQualityScheduler implements Schedulable {
 
-    // Имя Batch класса
+    // Batch class name
     private String batchClassName;
 
-    // Конструктор
+    // Constructor
     public DataQualityScheduler(String className) {
-        // сохраняем className в batchClassName
+        // store className in batchClassName
        this.batchClassName = className;
     }
 
@@ -13,16 +13,16 @@ public class DataQualityScheduler implements Schedulable {
         // 1. Type.forName(batchClassName)
         // 2. newInstance()
         // 3. Database.executeBatch(batch, 200)
-         // Находим класс по имени строки
+         // Find the class by its name string
         Type batchType = Type.forName(batchClassName);
-        // Создаём объект этого класса
+        // Create an instance of this class
         Database.Batchable<sObject> batch =
             (Database.Batchable<sObject>) batchType.newInstance();
-        // Запускаем Batch
-        Database.executeBatch(batch, 200);//200 — это размер порции (chunk size) — сколько записей Batch обрабатывает за один вызов execute().
-                               /// Стандартный — для большинства случаев
+        // Run the Batch
+        Database.executeBatch(batch, 200);// 200 is the chunk size: how many records the Batch processes in one execute() call.
+                               /// The standard value for most cases
     }
-    // Статический метод — запускает оба job
+    // Static method: schedules both jobs
     public static void scheduleAll() {
         System.schedule(
             'Lead Source Job',

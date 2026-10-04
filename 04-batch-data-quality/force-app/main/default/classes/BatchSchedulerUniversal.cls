@@ -1,21 +1,21 @@
 public class BatchSchedulerUniversal implements Schedulable {
 
-    // Имя Batch класса
+    // Batch class name
     private String batchClassName;
 
-    // Конструктор — принимает имя класса
+    // Constructor: takes the class name
     public BatchSchedulerUniversal(String className) {
-        // сохраняем className в batchClassName
+        // store className in batchClassName
         this.batchClassName = className;
     }
 
     public void execute(SchedulableContext ctx) {
-        // 1 Находим класс по имени строки
+        // 1. Find the class by its name string
         Type batchType =Type.forName(batchClassName);
-         //Создаем объект этого класа
+         // Create an instance of this class
          Database.Batchable<sObject> batch =
          (Database.Batchable<sObject>) batchType.newInstance();
-         //Запускаем batch
+         // Run the batch
          Database.executeBatch(batch, 200);
 
        

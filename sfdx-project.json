@@ -25,6 +25,14 @@
       "default": false
     },
     {
+      "path": "flows/force-app",
+      "default": false
+    },
+    {
+      "path": "apex-fundamentals/00-data-model/force-app",
+      "default": false
+    },
+    {
       "path": "apex-fundamentals/01-apex-basics/force-app",
       "default": false
     },

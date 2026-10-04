@@ -1,24 +1,24 @@
 public with sharing class accountController {
     @AuraEnabled
-    //указываем Account потому что это тип данных который возвращает метод
+    // the return type is Account because that is the data type the method returns
     public static Account findAccount() { 
         System.debug('Searching for account...');
-        //Пишем наш SOQL запрос с условием,указывая поля которые нам нужно забрать + само условие WHERE что означает какое  конктретно имя
-        //нам нужно
+        // Our SOQL query with a condition: the fields we need + the WHERE condition for the specific name
+        // we need
         List<Account> acc = [SELECT Id, Name FROM Account WHERE Name ='Dickenson plc'];
          
-        //Проверяем не пустой ли наш список if (acc.isEmpty()) { ... }
+        // Check whether our list is empty: if (acc.isEmpty()) { ... }
         //throw new AuraHandledException('Account is not found');
-        //Если условие выше оказалось true (список действительно пустой) — выполнение немедленно
-        // прерывается, и "выбрасывается" специальная ошибка с текстом 'Account is not found'.
+        // If the condition above is true (the list really is empty), execution is immediately
+        // stopped and a special error with the text 'Account is not found' is "thrown".
 
-        //В конструкции throw new AuraHandledException(...) происходит два последовательных действия:
-        //**new AuraHandledException('Текст ошибки') — мы создаем (конструируем) новый объект (new)
-        // ошибки в памяти компьютера и вкладываем в него понятный текст.
-        //**throw — мы берем этот только что созданный объект и «выбрасываем» его,
-        // чтобы остановить выполнение кода.
-        // [0]; -означает первый элемент списка, но так как у нас по задание возвращает один акаунт то он все равно первый в списке
-        //индексация в Apex, как и в JS, начинается с 0, поэтому первый элемент это [0], а не [1] 
+        // The throw new AuraHandledException(...) construct does two things in sequence:
+        //**new AuraHandledException('Error text'): we create (construct) a new error object (new)
+        // in memory and put a clear message into it.
+        //**throw: we take the object we just created and "throw" it
+        // to stop code execution.
+        // [0]; means the first element of the list; the task returns one account, so it's the first one anyway
+        // indexing in Apex, as in JS, starts at 0, so the first element is [0], not [1]
 System.debug('Result size: ' + acc.size());
         if (acc.isEmpty()){
             throw new AuraHandledException('Account is not found');
@@ -29,23 +29,21 @@ System.debug('Result size: ' + acc.size());
     }
 }
  
-//**Главное о throw Зачем нужно: Когда встроенные правила Salesforce не видят ошибку,
-// например: в нашей бизнес-логике  скидка превышает 50% или 
-//поле заполнено некорректно).Как это работает: Встретив throw, 
-//Apex моментально прекращает выполнение текущего метода.Что происходит дальше:
-// Ошибка либо перехватывается блоком try-catch, либо транслируется пользователю на экран в
-// виде красного сообщения.
+//** Key points about throw. Why: when Salesforce's built-in rules don't see an error,
+// e.g. in our business logic a discount exceeds 50% or
+// a field is filled in incorrectly. How it works: when Apex hits throw,
+// it immediately stops the current method. What happens next:
+// the error is either caught by a try-catch block or shown to the user on screen as
+// a red message.
 
-//**AuraHandledException Зачем он нужен:
-//Когда в Apex что-то идёт не так (например, не нашли нужную запись) — нужно как-то сообщить об
-// этом на сторону JavaScript, чтобы пользователь увидел понятную ошибку, а не "сломанную" страницу.
-//Обычная Apex-ошибка (Exception) не долетает до JS красиво — JS получает только общее
-// "что-то пошло не так", без нужного конкретного текста.
-//AuraHandledException — это единственный тип ошибки, который гарантированно 
-//передаёт нужный текст ошибки на сторону LWC, чтобы его можно было поймать через .catch() и 
-//показать пользователю.
-
-
+//** Why AuraHandledException is needed:
+// When something goes wrong in Apex (e.g. the record wasn't found), we need to report
+// it to the JavaScript side so the user sees a clear error rather than a "broken" page.
+// A regular Apex Exception doesn't reach JS cleanly: JS only gets a generic
+// "something went wrong" without the specific text.
+// AuraHandledException is the only exception type that reliably
+// passes the error text to the LWC side, where it can be caught with .catch() and
+// shown to the user.
 
 
 
@@ -66,4 +64,6 @@ System.debug('Result size: ' + acc.size());
 
 
 
-///Задание — поиск Account по имени через Promise
+
+
+/// Task: find an Account by name using a Promise

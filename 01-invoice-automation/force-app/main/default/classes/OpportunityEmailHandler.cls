@@ -4,7 +4,7 @@ global class OpportunityEmailHandler implements Messaging.InboundEmailHandler {
         Messaging.InboundEmailResult result = new Messaging.InboundEmailResult();
         
         try {
-            // 1. Получаем тему письма и ищем номер после знака #
+            // 1. Get the email subject and find the number after the # sign
             String subject = email.subject;
             if (!subject.contains('#')) {
                 System.debug('Invoice number marker (#) not found in subject');
@@ -14,7 +14,7 @@ global class OpportunityEmailHandler implements Messaging.InboundEmailHandler {
             String invoiceNumber = subject.substringAfter('#').trim();
             System.debug('Searching for Opportunity with Invoice Number: ' + invoiceNumber);
             
-            // 2. Ищем Opportunity (любую, где совпал номер)
+            // 2. Find the Opportunity (any one with a matching number)
             List<Opportunity> opps = [
                 SELECT Id, StageName 
                 FROM Opportunity 
@@ -29,16 +29,16 @@ global class OpportunityEmailHandler implements Messaging.InboundEmailHandler {
 
             Opportunity opp = opps[0];
 
-            // 3. Читаем текст ответа (проверяем и Plain Text, и HTML)
+            // 3. Read the reply text (check both Plain Text and HTML)
             String bodyText = (email.plainTextBody != null) ? email.plainTextBody : email.htmlBody;
             
             if (bodyText != null) {
-                // Если находим Approved - двигаем на стадию закрыто/выиграно
+                // If we find Approved, move to the Closed Won stage
                 if (bodyText.containsIgnoreCase('Approved')) {
                     opp.StageName = 'Closed Won'; 
                     System.debug('Status updated to Closed Won');
                 } 
-                // Если находим Rejected - закрываем как проиграно
+                // If we find Rejected, close as lost
                 else if (bodyText.containsIgnoreCase('Rejected')) {
                     opp.StageName = 'Closed Lost';
                     System.debug('Status updated to Closed Lost');

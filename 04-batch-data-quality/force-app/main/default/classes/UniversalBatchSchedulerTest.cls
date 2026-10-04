@@ -2,14 +2,14 @@
 public class UniversalBatchSchedulerTest {
     @isTest
     static void testScheduler() {
-        // 1. Создай Lead для LeadEngagementBatch
+        // 1. Create a Lead for LeadEngagementBatch
         insert new Lead(
             LastName = 'Test Lead',
             Company  = 'Test Company',
             Status   = 'Open - Not Contacted'
         );
 
-        // 2. Запусти Scheduler с именем Batch класса
+        // 2. Run the Scheduler with the Batch class name
         Test.startTest();
             System.schedule(
                 'Test Universal Job',
@@ -18,7 +18,7 @@ public class UniversalBatchSchedulerTest {
             );
         Test.stopTest();
 
-        // 3. Проверь что job создался
+        // 3. Check that the job was created
         List<CronTrigger> jobs = [
             SELECT Id, State FROM CronTrigger
             WHERE CronJobDetail.Name = 'Test Universal Job'

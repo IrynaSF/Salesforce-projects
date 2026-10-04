@@ -1,6 +1,6 @@
-//Задание — LWC компонент "Leads from Virginia" с цепочкой .then()
-//Сценарий: Пользователь нажимает кнопку "Load Virginia Leads" — компонент через Promise-цепочку вызывает Apex,
-// получает всех лидов из штата Вирджиния, и показывает их список на странице.
+// Task: LWC "Leads from Virginia" with a .then() chain
+// Scenario: the user clicks "Load Virginia Leads"; the component calls Apex through a Promise chain,
+// gets all leads from the state of Virginia and shows them on the page.
 
 public with sharing class LeadsFromVaController {
    
@@ -8,7 +8,7 @@ public with sharing class LeadsFromVaController {
     
    public static List<Lead> getVirginiaLeads() {
         
-         List<Lead> leads = [SELECT Id, FirstName, LastName, State, Status FROM Lead WHERE State IN ('VA', 'Virginia') ORDER BY LastName ASC ];//IN испольщзуем чтобы поймать все варианты
+         List<Lead> leads = [SELECT Id, FirstName, LastName, State, Status FROM Lead WHERE State IN ('VA', 'Virginia') ORDER BY LastName ASC ];// IN is used to catch both spellings
          System.debug('All leads from Virginia:' + leads );
 
          return leads;

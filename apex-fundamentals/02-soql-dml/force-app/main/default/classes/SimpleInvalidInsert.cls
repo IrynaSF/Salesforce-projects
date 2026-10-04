@@ -1,10 +1,10 @@
 public class SimpleInvalidInsert {
     public static void testTooLongField(){
         
-        // Добавляем Position__c уже к существующей записи. 
+        // Add Position__c to an existing record.
         Employee__c richer = [SELECT Id, Name, Position__c FROM Employee__c WHERE Name = 'Richer Test' LIMIT 1];
         
-        //Строка больше 100 символов 
+        // String longer than 100 characters
         richer.Position__c = 'This is a very long position title that definitely exceeds the one hundred character limit for this field in Salesforce';
         
         Database.SaveResult result = Database.update(richer, false);

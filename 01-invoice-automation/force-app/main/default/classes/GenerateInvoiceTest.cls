@@ -1,17 +1,17 @@
 @isTest
 private class GenerateInvoiceTest {
 
-    // Этот метод запускается ОДИН РАЗ перед всеми тестами
-    // Здесь создаём данные которые нужны во всех трёх тестах
+    // This method runs ONCE before all tests
+    // Here we create the data needed by all three tests
     @testSetup
     static void setupData() {
 
-        // Account создаём первым — Opportunity зависит от него
+        // Create the Account first: the Opportunity depends on it
         Account acc = new Account(Name = 'Test Acc');
         insert acc;
 
-        // Opportunity — главный объект, его Id передаём в метод контроллера
-        // Invoice_Number__c = 'INV-123' — это станет именем файла
+        // Opportunity is the main object, its Id is passed to the controller method
+        // Invoice_Number__c = 'INV-123' becomes the file name
         Opportunity opp = new Opportunity(
             Name              = 'Test Opp',
             StageName         = 'Prospecting',
@@ -22,17 +22,17 @@ private class GenerateInvoiceTest {
         insert opp;
     }
 
-    // ТЕСТ 1 — файла ещё нет, метод должен создать новый
+    // TEST 1: no file yet, the method must create a new one
     @isTest
 static void testGenerateAndAttachPDF_existingFile() {
 
-    // Достаём Opportunity и сразу читаем Name — нужен для fileName
+    // Query the Opportunity and read Name right away: needed for fileName
  Opportunity opp = [SELECT Id, Name, Invoice_Number__c FROM Opportunity WHERE Name = 'Test Opp' LIMIT 1];
 
-String fileName = opp.Invoice_Number__c; // берём реальное значение
+String fileName = opp.Invoice_Number__c; // take the real value
 
-    // Создаём файл вручную ДО вызова метода
-    // Title должен совпадать с fileName — иначе контроллер не найдёт существующий файл
+    // Create the file manually BEFORE calling the method
+    // Title must match fileName, otherwise the controller won't find the existing file
     ContentVersion cv = new ContentVersion(
         Title                  = fileName,
         PathOnClient           = fileName + '.pdf',
@@ -41,12 +41,12 @@ String fileName = opp.Invoice_Number__c; // берём реальное знач
     );
     insert cv;
 
-    // Вызываем метод — он должен найти существующий файл и создать новую версию
+    // Call the method: it must find the existing file and create a new version
     Test.startTest();
         GenerateInvoiceController.generateAndAttachPDF(opp.Id);
     Test.stopTest();
 
-    // Проверяем что версий стало две
+    // Check that there are now two versions
     Integer versionCount = [
         SELECT COUNT()
         FROM ContentVersion
@@ -54,23 +54,23 @@ String fileName = opp.Invoice_Number__c; // берём реальное знач
     ];
     Assert.areEqual(2, versionCount, 'Should have created a new version of existing file');
 }
-    // ТЕСТ 3 — передаём несуществующий Id, метод должен упасть с ошибкой
+    // TEST 3: pass a non-existent Id, the method must fail with an error
     @isTest
     static void testGenerateAndAttachPDF_wrongId() {
 
-        // Создаём фейковый Id правильного формата но которого нет в базе
+        // Create a fake Id with a valid format that doesn't exist in the database
         Id fakeId = '006000000000001AAA';
 
         Test.startTest();
         try {
-            // Ожидаем что метод бросит исключение
+            // Expect the method to throw an exception
             GenerateInvoiceController.generateAndAttachPDF(fakeId);
 
-            // Если дошли до этой строки — метод не упал, тест провален
+            // If we reach this line the method didn't fail, so the test fails
             Assert.fail('Should have thrown an exception for invalid Id');
 
         } catch (Exception e) {
-            // Метод упал как и ожидалось — проверяем что сообщение не пустое
+            // The method failed as expected: check that the message is not empty
             Assert.isNotNull(e.getMessage(), 'Exception message should not be null');
         }
         Test.stopTest();

@@ -1,16 +1,16 @@
 @isTest
 public class ScheduledJobsMonitorControllerTest {
 
-    // Простой Schedulable класс только для теста
+    // Simple Schedulable class for the test only
     class TestScheduler implements Schedulable {
         public void execute(SchedulableContext ctx) {
-            // пустой — только для теста
+            // empty: for the test only
         }
     }
 
     @isTest
     static void testGetActiveJobs() {
-        // Используем TestScheduler
+        // Use TestScheduler
         System.schedule(
             'Test Monitor Job',
             '0 0 8 * * ?',

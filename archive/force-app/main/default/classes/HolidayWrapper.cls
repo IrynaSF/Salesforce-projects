@@ -3,10 +3,10 @@ public class HolidayWrapper {
 
     public String name;
     @AuraEnabled
-    public HolidayDate z0date;// взята из ответа Calendarific сайта
+    public HolidayDate z0date;// taken from the Calendarific API response
 
     public class HolidayDate{
          @AuraEnabled
-        public String iso;//взята из ответа Calendarific сайта 
+        public String iso;// taken from the Calendarific API response
     }
  }

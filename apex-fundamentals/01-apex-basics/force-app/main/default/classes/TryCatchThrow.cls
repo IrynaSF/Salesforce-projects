@@ -1,15 +1,15 @@
-//Задание 1 — простой try/catch
-//Напиши метод findTrainingById(Id trainingId):
-//нутри try — SOQL запрос, который ищет Training__c по Id
-//Если список пустой — используй throw чтобы выбросить AuraHandledException
-//Внутри catch — поймай исключение и выведи его через System.debug
-//Внутри finally — System.debug('Search completed')
+// Task 1: a simple try/catch
+// Write a method findTrainingById(Id trainingId):
+// inside try: a SOQL query that finds Training__c by Id
+// If the list is empty, use throw to raise an AuraHandledException
+// Inside catch: catch the exception and print it with System.debug
+// Inside finally: System.debug('Search completed')
 
 public with sharing class TryCatchThrow {
     public static void findTrainingById(Id trainingId) {
                
 try {
-    // основной код
+    // main code
         List<Training__c> listTrain = [
             SELECT Id 
             FROM Training__c
@@ -20,10 +20,10 @@ if (listTrain.isEmpty()) {
     throw new AuraHandledException('The list is empty');
 }
 } catch (Exception e) {
-    // если сломалось
+    // if something broke
       System.debug(e.getMessage());
 } finally {
-    // выполняется всегда
+    // always runs
     System.debug('Search completed');
 }
 
@@ -34,7 +34,7 @@ if (listTrain.isEmpty()) {
 //TryCatchThrow.findTrainingById(null);
 
 
-//  Полезные методы класса Exception:
-//***e.getMessage() — возвращает короткое описание того, что пошло не так.e.
-//***getStackTraceString() — показывает точную строку и цепочку вызовов,где произошла ошибка.
-//***e.getTypeName() — возвращает тип ошибки (например, System.MathException).
+//  Useful methods of the Exception class:
+//***e.getMessage(): returns a short description of what went wrong.
+//***e.getStackTraceString(): shows the exact line and call chain where the error happened.
+//***e.getTypeName(): returns the error type (e.g. System.MathException).

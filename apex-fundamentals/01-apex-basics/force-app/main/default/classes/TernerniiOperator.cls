@@ -12,23 +12,23 @@ public with sharing class TernerniiOperator {
 
 
 
-//(revenue >= 1000000) — условие (проверяем)
-///? — "если условие истинно — то..."
-//'Enterprise' — значение если true
-//: — "иначе..."
-//'SMB' — значение если false
+//(revenue >= 1000000): the condition (what we check)
+///?: "if the condition is true, then..."
+//'Enterprise': the value if true
+//: "otherwise..."
+//'SMB': the value if false
 
-//Тернарный оператор 
-//Это сокращённая запись if/else в одну строку. Используется когда нужно просто присвоить одно из двух значений переменной.
-//Схема:
-//тип переменная = условие ? значение_если_true : значение_если_false;
-//Когда использовать:
-///Когда логика простая — просто выбрать одно из двух значений. 
-//Если логика сложная (несколько действий внутри) — лучше обычный if/else.
+// Ternary operator
+// A one-line shorthand for if/else. Used when you just need to assign one of two values to a variable.
+// Pattern:
+// type variable = condition ? value_if_true : value_if_false;
+// When to use it:
+/// When the logic is simple: just pick one of two values.
+// If the logic is complex (several actions inside), a regular if/else is better.
 
-//Задание 2 — тернарный оператор
-//Напиши метод getAccountTier(Decimal annualRevenue):
-///Принимает число annualRevenue
-//Через тернарный оператор определяет уровень клиента:
-//если annualRevenue >= 1000000 → 'Enterprise'
-//иначе → 'SMB'
+// Task 2: ternary operator
+// Write a method getAccountTier(Decimal annualRevenue):
+/// Takes the number annualRevenue
+// Uses the ternary operator to determine the customer tier:
+// if annualRevenue >= 1000000 → 'Enterprise'
+// otherwise → 'SMB'

@@ -18,32 +18,32 @@ public static List<String> getBaseCurrencyOptions() {
 
 public static Map<String, Decimal> getCalculalatorSelectedCurrency (Map<String, Decimal> rates,  Decimal baseRate){
 
-    //  Создаем новую мапу для результатов пересчета
+    //  Create a new map for the recalculated results
 Map<String, Decimal> recalculatedRates = new Map<String, Decimal>();
 
 
-    //  С помощью цикла перебираем ключи (коды валют) из исходной мапы
+    //  Loop over the keys (currency codes) of the source map
     for (String currencyCode : rates.keySet()) {
 
-        Decimal originalRate = rates.get(currencyCode); //  Получаем исходный курс валюты из исходной мапы
+        Decimal originalRate = rates.get(currencyCode); //  Get the original currency rate from the source map
         
-        // Делаем расчет по  формуле
+        // Calculate using the formula
         Decimal newRate = (originalRate / baseRate).setScale(5);
         
-        //  Вкладываем полученный результат в новую мапу
+        //  Put the result into the new map
         recalculatedRates.put(currencyCode, newRate);
     }
     return recalculatedRates;
 }
 
-///Календарь. 
+/// Calendar.
 
 public static Currency_Rate_Log__c  getLogCalendar (String isoDate) {
 
-   //Мы получаем дату как строчку, и с помощью Date.valueOf() эта строчка превращается в настоящий Apex-тип Date, потому что SOQL сравнивает даты, а не строки. 
+   // We receive the date as a string; Date.valueOf() turns it into a real Apex Date, because SOQL compares dates, not strings.
     Date selectedDate = Date.valueOf(isoDate);
 
-    //Первый SOQL — забирает саму запись Currency_Rate_Log__c за нужную дату:
+    // The first SOQL gets the Currency_Rate_Log__c record itself for the requested date:
     List<Currency_Rate_Log__c> logs = [
         SELECT Id, Base_Currency__c, Update_DateTime__c, Status__c,
         (SELECT Currency_Code__c, Rate__c FROM Currency_Rates__r)
@@ -52,25 +52,25 @@ public static Currency_Rate_Log__c  getLogCalendar (String isoDate) {
         LIMIT 1
     ];
     if (!logs.isEmpty()) {
-        return logs[0]; // возвращаем найденную запись
+        return logs[0]; // return the found record
     } else {
-        return null; // если запись не найдена, возвращаем null
+        return null; // if no record is found, return null
     }
 }
 @AuraEnabled(cacheable=true)
     public static CurrencyDisplayWrapper  sendLogToLWC (String isoDate, String selectedCurrency) {
 
-    // Создаем объект-обертку Если логи есть, мы будем вкладывать их сюда.Если логов нет, он остается пустым, Отсюда информация передается LWC. 
+    // Create the wrapper object. If there are logs, we put them here. If not, it stays empty. The data goes to the LWC from here.
     CurrencyDisplayWrapper result = new CurrencyDisplayWrapper();
 
-    Currency_Rate_Log__c log = getLogCalendar(isoDate);//  Получаем запись лога за выбранную дату
+    Currency_Rate_Log__c log = getLogCalendar(isoDate);//  Get the log record for the selected date
 
-    //Еще одна проверка. 
+    // One more check.
     if (log == null) {
     return result;
 }
 
-//это курсы как они есть в базе, то есть курс каждой валюты относительно исходной базовой валюты лога (той, что была указана при запросе к API в тот день, например, USD)
+// these are the rates as stored in the database, i.e. each currency's rate against the log's original base currency (the one used for the API call that day, e.g. USD)
     Map<String, Decimal> rates = new Map<String, Decimal>();
 
     for (Currency_Rate__c rate : log.Currency_Rates__r) {
@@ -79,7 +79,7 @@ public static Currency_Rate_Log__c  getLogCalendar (String isoDate) {
 
     Decimal baseRate = rates.get(selectedCurrency);
 
-    //это новые, пересчитанные курсы, но уже относительно валюты, которую выбрал пользователь (selectedCurrency) — то есть другие числа, посчитанные по формуле originalRate / baseRate
+    // these are the new, recalculated rates against the currency selected by the user (selectedCurrency), i.e. different numbers calculated as originalRate / baseRate
     Map<String, Decimal> recalculatedRates = getCalculalatorSelectedCurrency(rates, baseRate);
 
     result.rates = recalculatedRates;

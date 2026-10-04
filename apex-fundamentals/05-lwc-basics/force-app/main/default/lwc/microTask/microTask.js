@@ -8,27 +8,27 @@ export default class MicroTask extends LightningElement {
 accountName;
 
      handleLoad(){
-        // Синхронный вывод сообщения в консоль браузера
+        // Synchronous message to the browser console
         console.log('Message: the button was pressed');
 
-        //Итого порядок:
-//Promise.resolve() — создаём выполненный Promise
-//.then() — уходит в Microtask Queue
-//JS заканчивает синхронный код (setTimeout регистрируется)
-//Только потом JS берёт .then() из очереди и выполняет
+        // Overall order:
+//Promise.resolve(): create a resolved Promise
+//.then(): goes to the Microtask Queue
+// JS finishes the synchronous code (setTimeout is registered)
+// Only then does JS take .then() from the queue and run it
 
         Promise.resolve().then(() => {
     this.status = this.accountName.data;
     console.log('The status has changed');
 });
 
-//Порядок
-//JS видит setTimeout — передаёт его браузеру
-//Браузер запускает таймер в фоне
-//JS продолжает выполнять остальной код
-//Через 3 секунды браузер кладёт функцию в Callback Queue
-//Event Loop берёт её оттуда — но только когда Call Stack пуст и Microtask Queue пуста
-//Только тогда выполняется console.log
+// Order
+// JS sees setTimeout and hands it to the browser
+// The browser runs the timer in the background
+// JS keeps executing the rest of the code
+// After 3 seconds the browser puts the function into the Callback Queue
+// The Event Loop takes it from there, but only when the Call Stack and the Microtask Queue are empty
+// Only then does console.log run
      setTimeout(() => {
             console.log('Background process completed');
         }, 3000);
@@ -37,5 +37,5 @@ accountName;
 }
 
 
-//Сценарий:Компонент загружает данные аккаунта с сервера. 
-// Пока данные грузятся — показывает "Loading...". Когда данные пришли — выводит имя аккаунта.
+// Scenario: the component loads account data from the server.
+// While loading it shows "Loading...". When the data arrives it shows the account name.

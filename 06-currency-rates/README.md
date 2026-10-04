@@ -46,7 +46,7 @@ currencyWidget (LWC)
 ## Org setup required
 
 - Named Credential `ExchangeRate_Auth` → `https://v6.exchangerate-api.com`
-- Custom objects and Custom Metadata Type listed above, with your own API key in a metadata record
+- A `Currency_Setting__mdt` record with your own API key (the objects and the metadata type are included)
 - Schedule the job, e.g. `System.schedule('Currency Rates Daily', '0 0 7 * * ?', new CurrencyRatesScheduler());`
 
 ## What I learned

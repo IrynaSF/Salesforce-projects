@@ -3,7 +3,7 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import sendEmail from '@salesforce/apex/SendEmailController.sendEmail';
 
 export default class SendEmail extends LightningElement {
-    // ← НЕТ @track toAddress здесь!
+    // ← NO @track toAddress here!
     _toAddress = '';
     @track currentSubject = '';
     @track currentBody = '';

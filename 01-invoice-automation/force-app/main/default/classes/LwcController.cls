@@ -14,7 +14,7 @@ public with sharing class LwcController {
             data.put('invoiceNumber', ocr.Opportunity.Invoice_Number__c);
         }
 
-        // Ищем PDF файл привязанный к этой Opportunity
+        // Find the PDF file attached to this Opportunity
         List<ContentDocumentLink> files = [
             SELECT ContentDocumentId
             FROM ContentDocumentLink

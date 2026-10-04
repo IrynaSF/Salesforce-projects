@@ -1,7 +1,7 @@
 @isTest
 private class CurrencyRatesServiceTest {
 
-    // Вложенный класс-заглушка (мок), реализующий HttpCalloutMock
+    // Nested stub class (mock) implementing HttpCalloutMock
     private class CurrencyRatesMock implements HttpCalloutMock {
         public HTTPResponse respond(HTTPRequest req) {
             HttpResponse res = new HttpResponse();
@@ -16,20 +16,20 @@ private class CurrencyRatesServiceTest {
     static void testGetRates() {
       
     
-        //  подключить мок
+        //  plug in the mock
         Test.setMock(HttpCalloutMock.class, new CurrencyRatesMock());
         
         Test.startTest();
           Map<String, Decimal> rates = CurrencyRatesService.getRates('USD');
         Test.stopTest();
         
-        //  проверить результат через System.assertEquals
+        //  check the result with System.assertEquals
         System.assertEquals(0.92, rates.get('EUR'), 'The exchange rate EUR must be equal 0.92');
 
-//  Проверка на неравенство (System.assertNotEquals)
+//  Inequality check (System.assertNotEquals)
 System.assertNotEquals(null, rates, 'Map with rates should not be null');
 
-//  Базовая проверка условия (System.assert)
+//  Basic condition check (System.assert)
 System.assert(rates.containsKey('EUR'), 'Map should contain currency EUR');
     }
 }

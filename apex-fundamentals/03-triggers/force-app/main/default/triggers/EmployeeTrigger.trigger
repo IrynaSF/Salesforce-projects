@@ -1,32 +1,32 @@
 trigger EmployeeTrigger on Employee__c  (before insert, after insert) {
  // ========================================
-// ORDER OF EXECUTION при сохранении Employee__c
+// ORDER OF EXECUTION when saving Employee__c
 // ========================================
-// Шаг 1: Загрузка исходной записи (для insert — создаётся "пустая" в памяти)
-// Шаг 2: Наложение новых значений полей (Name, Department__c и т.д.)
-// Шаг 3: Проверка форматов, длины полей, внешних ключей (Lookup/Master-Detail)
-//        — если бы Department__c был невалидным, тут упало бы (FIELD_INTEGRITY_EXCEPTION)
-// Шаг 4: Before-Flow (если настроен) — у нас его нет
-//****  Шаги 1-4 не пишутся  в коде вообще, они происходят автоматически, внутри самого Salesforce, ещё до того, как  триггер вообще начинает выполняться.
+// Step 1: Load the original record (for insert an "empty" one is created in memory)
+// Step 2: Apply the new field values (Name, Department__c, etc.)
+// Step 3: Validate formats, field lengths, foreign keys (Lookup/Master-Detail)
+//        — if Department__c were invalid, it would fail here (FIELD_INTEGRITY_EXCEPTION)
+// Step 4: Before-save Flow (if configured): we don't have one
+//****  Steps 1-4 are not written in code at all; they happen automatically inside Salesforce before the trigger even starts.
 //================================================================================================
-// Шаг 5: BEFORE TRIGGERS — мы вписываем код сюда, ветка isBefore
+// Step 5: BEFORE TRIGGERS: our code goes here, in the isBefore branch
  if (Trigger.isBefore && Trigger.isInsert) {
 
-// Шаг 6: Validation Rules — тут проверяется наш ISBLANK(Name)
-// Шаг 7: Duplicate Rules — если бы были настроены
-// Шаг 8: Запись СОХРАНЯЕТСЯ в БД, появляется Id
+// Step 6: Validation Rules: our ISBLANK(Name) is checked here
+// Step 7: Duplicate Rules: if configured
+// Step 8: The record is SAVED to the database and gets an Id
     
 System.debug('BEFORE INSERT: we are processing ' + Trigger.new.size() + ' records. Id Not yet.');
 
  }
 
-// Шаг 9: AFTER TRIGGERS — мы вписываем код сюда, ветка isAfter
+// Step 9: AFTER TRIGGERS: our code goes here, in the isAfter branch
 if (Trigger.isAfter && Trigger.isInsert) {
  
-    // Шаг 10+: Assignment/Workflow/Flow/Sharing Rules — у нас не настроены
-// Финал: Commit — всё окончательно фиксируется в базе
+    // Step 10+: Assignment/Workflow/Flow/Sharing Rules: not configured here
+// Final: Commit, everything is permanently saved to the database
 for (Employee__c emp : Trigger.new) {
-    System.debug('AFTER INSERT: запись сохранена, Id = ' + emp.Id + ', Name = ' + emp.Name);
+    System.debug('AFTER INSERT: record saved, Id = ' + emp.Id + ', Name = ' + emp.Name);
 }
 
 }

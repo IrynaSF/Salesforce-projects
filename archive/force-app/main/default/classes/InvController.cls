@@ -26,38 +26,38 @@ public with sharing class InvController {
     }
 
     public PageReference generateAndSave() {
-        // 1. Определяем имя файла — никогда не null
+        // 1. Determine the file name: never null
         String fileName = (opp.Invoice_Number__c != null && opp.Invoice_Number__c != '')
             ? opp.Invoice_Number__c
             : 'Invoice-' + opp.Name;
 
-        // 2. Делаем PDF
+        // 2. Generate the PDF
         PageReference pdf = Page.VisualController;
         pdf.getParameters().put('id', opp.Id);
         Blob body;
         if (Test.isRunningTest()) { body = Blob.valueOf('Test'); }
         else { body = pdf.getContentAsPDF(); }
 
-        // 3. Ищем существующий файл по правильному имени
+        // 3. Find the existing file by the correct name
         List<ContentDocument> oldFiles = [
             SELECT Id FROM ContentDocument 
             WHERE Title = :fileName 
             LIMIT 1
         ];
 
-        // 4. Создаём ContentVersion
+        // 4. Create the ContentVersion
         ContentVersion cv = new ContentVersion();
         cv.Title = fileName;
         cv.PathOnClient = fileName + '.pdf';
         cv.VersionData = body;
 
         if (!oldFiles.isEmpty()) {
-            // Обновляем существующий файл
+            // Update the existing file
             cv.ContentDocumentId = oldFiles[0].Id;
         }
         insert cv;
 
-        // 5. Если файл новый — прикрепляем к Opportunity
+        // 5. If the file is new, attach it to the Opportunity
         if (oldFiles.isEmpty()) {
             Id docId = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :cv.Id].ContentDocumentId;
             ContentDocumentLink link = new ContentDocumentLink();

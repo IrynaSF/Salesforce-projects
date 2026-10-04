@@ -1,11 +1,11 @@
 <template>    
 <lightning-card title="List of Accounts">
         <div class="slds-p-around_medium">
-            <!-- 1. Итерируемся по массиву accounts -->
+            <!-- 1. Iterate over the accounts array -->
             <template for:each={accounts} for:item="acc">
                 
-                <!-- 2. Рендерим дочерний компонент accountCard -->
-                <!-- Передаем данные аккаунта в атрибут account-data -->
+                <!-- 2. Render the child accountCard component -->
+                <!-- Pass the account data into the account-data attribute -->
                 <c-account-card-api
                     key={acc.Id} 
                     account={acc}>

@@ -2,7 +2,7 @@
 public class OpportunityAtRiskBatchTest {
     @isTest
     static void testBatch() {
-        // 1. Создай Account и Opportunity без активности
+        // 1. Create an Account and an Opportunity with no activity
         Account acc = new Account(Name = 'Test Account');
         insert acc;
 
@@ -15,12 +15,12 @@ public class OpportunityAtRiskBatchTest {
         );
         insert opp;
 
-        // 2. Запусти Batch
+        // 2. Run the Batch
         Test.startTest();
             Database.executeBatch(new OpportunityAtRiskBatch());
         Test.stopTest();
 
-        // 3. Проверь что Description обновился
+        // 3. Check that Description was updated
         Opportunity updated = [
             SELECT Description FROM Opportunity WHERE Id = :opp.Id
         ];

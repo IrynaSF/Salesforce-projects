@@ -13,8 +13,8 @@ static void setupTestData() {
         List<Contact> result = TrackLwcController.getContacts();
         Test.stopTest();
 
-        // 3. ПРОВЕРКА (Assert)
-        // Проверяем, что список не пустой и содержит наши данные
+        // 3. CHECK (Assert)
+        // Check that the list is not empty and contains our data
         System.assertEquals(2, result.size(), 'The list of contacts must not be empty.');
         System.assertEquals('TestContactTrack', result[0].Name, 'Contact name mismatch');
     }

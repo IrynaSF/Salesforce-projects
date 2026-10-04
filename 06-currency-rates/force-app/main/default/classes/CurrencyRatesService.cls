@@ -1,18 +1,18 @@
 public with sharing class CurrencyRatesService {
     @AuraEnabled(cacheable=true)
-    public static Map<String, Decimal> getRates(String baseCurrencyCode) { //Указываем параметр. Это наша  валюта, которая будет передаваться при вызове метода. 
+    public static Map<String, Decimal> getRates(String baseCurrencyCode) { // The parameter is our base currency, passed in when the method is called.
         
-        // Шаг 1 — идём в Custom Metadata и достаём сохранённый API-ключ (нужен для авторизации в внешнем сервисе)
+        // Step 1: read the saved API key from Custom Metadata (needed to authenticate with the external service)
         Currency_Setting__mdt setting = [SELECT Api_Key__c FROM Currency_Setting__mdt LIMIT 1];
 
          System.debug('Api_Key__c found: ' + (setting != null));
 
-         // Шаг 2 — "склеиваем" полный адрес запроса: имя Named Credential + версия API + сам ключ + путь + выбранная валюта
+         // Step 2: build the full request URL: Named Credential name + API version + key + path + selected currency
          String endpoint = 'callout:ExchangeRate_Auth/v6/' + setting.Api_Key__c + '/latest/' + baseCurrencyCode;
          
          System.debug('Endpoint: ' + endpoint);
 
-        // Шаг 3 — создаём HTTP-запрос методом GET, отправляем его, получаем ответ от сервера (res)
+        // Step 3: create a GET HTTP request, send it and get the server response (res)
         HttpRequest req = new HttpRequest();
         req.setEndpoint(endpoint);
         req.setMethod('GET');       
@@ -22,74 +22,74 @@ public with sharing class CurrencyRatesService {
         System.debug('Status Code: ' + res.getStatusCode());
         System.debug('Status: ' + res.getStatus());
 
- // Шаг 4 — превращаем "сырой" текстовый ответ (JSON-строку) в структуру данных Apex — Map, с которой можно работать программно
+ // Step 4: turn the raw text response (JSON string) into an Apex data structure, a Map we can work with in code
  Map<String, Object> body = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
 
  System.debug('Top-level keys: ' + body.keySet());
  
-   //Шаг 5 — "спускаемся" на один уровень глубже — достаём именно ту часть ответа, где лежат курсы валют (conversion_rates), а не весь ответ целиком
+   // Step 5: go one level deeper and take only the part of the response with the rates (conversion_rates), not the whole response
 Map<String, Object> conversionRates = (Map<String, Object>) body.get('conversion_rates');
 
 System.debug('Number of currencies: ' + conversionRates.size());
 
-//Шаг 6-7 — создаём новую, "чистую" Map (rates) и заполняем её циклом, проходя по всем валютам
+// Steps 6-7: create a new, "clean" Map (rates) and fill it in a loop over all currencies
 Map<String, Decimal> rates = new Map<String, Decimal>();
-// Шаг 7: Итерируемся по ключам и значениям исходной Map и заполняем новую Map
+// Step 7: iterate over the keys and values of the source Map and fill the new Map
 for (String currencyCode : conversionRates.keySet()) {
     Decimal rate = (Decimal) conversionRates.get(currencyCode);
     rates.put(currencyCode, rate);
 }
 System.debug('Rates map size: ' + rates.size());
 
-// Шаг 8 — создаём одну запись-"журнал" (Currency_Rate_Log__c) с четырьмя полями (сырой JSON, статус, время, базовая валюта)
-// и сразу сохраняем её (insert rateLog) — это важно, потому что дальше нам нужен Id этой записи
+// Step 8: create one "log" record (Currency_Rate_Log__c) with four fields (raw JSON, status, time, base currency)
+// and save it right away (insert rateLog): this matters because we need this record's Id next
 Currency_Rate_Log__c rateLog = new Currency_Rate_Log__c();
 
-// Сохраняем JSON-ответ в поле Response_JSON__c
+// Save the JSON response in the Response_JSON__c field
 rateLog.Response_JSON__c = res.getBody(); 
 
-// Сохраняем статус ответа в поле Status__c
+// Save the response status in the Status__c field
 rateLog.Status__c = (String)body.get('result'); 
 
-// Сохраняем дату и время запроса в поле Update_DateTime__c
+// Save the request date and time in the Update_DateTime__c field
 rateLog.Update_DateTime__c = System.now(); 
 
-// Сохраняем базовую валюту в поле Base_Currency__c
+// Save the base currency in the Base_Currency__c field
 rateLog.Base_Currency__c = baseCurrencyCode; 
 
 insert rateLog;
 
 System.debug('rateLog inserted, Id: ' + rateLog.Id);
 
-//Шаг 9-10 — проходим циклом по rates ещё раз, но на этот раз не сохраняем сразу, а просто готовит список будущих записей
-// в памяти — каждая содержит код валюты, курс, и ссылку (Lookup) на только что созданный лог
+// Steps 9-10: loop over rates again, but this time don't save right away; just prepare a list of future records
+// in memory, each holding the currency code, the rate and a Lookup to the log just created
 List<Currency_Rate__c> ratesToInsert = new List<Currency_Rate__c>();
 
-// Шаг 10: Итерируемся по Map курсов валют и создаем объекты Currency_Rate__c
+// Step 10: iterate over the rates Map and create Currency_Rate__c objects
 for (String currencyCode : rates.keySet()) {
     Decimal rateValue = rates.get(currencyCode);
     
-    // Создаем новый объект Currency_Rate__c и заполняем его поля
+    // Create a new Currency_Rate__c object and fill in its fields
     Currency_Rate__c newRate = new Currency_Rate__c();
     newRate.Currency_Code__c = currencyCode;
     newRate.Rate__c = rateValue;
     
-   // Связываем объект Currency_Rate__c с записью Currency_Rate_Log__c
+   // Link the Currency_Rate__c object to the Currency_Rate_Log__c record
     newRate.Currency_Rate_Log__c = rateLog.Id; 
     
-  // Добавляем объект в список для последующей вставки
+  // Add the object to the list for a later insert
     ratesToInsert.add(newRate);
 }
   System.debug('Number of Currency_Rate__c to insert: ' + ratesToInsert.size());
    System.debug('Currency_Rate__c to insert: ' + ratesToInsert);
-//Шаг 11 — только теперь, когда список полностью готов, делаем одну массовую вставку — экономим "бюджет" DML-операций
+// Step 11: only now, when the list is complete, do one bulk insert to save the DML "budget"
 if (!ratesToInsert.isEmpty()) {
     insert ratesToInsert;
    
 }
 
 System.debug('Returning rates map with ' + rates.size() + ' currencies');
-// Шаг 12: Возвращаем Map с курсами валют
+// Step 12: return the Map of currency rates
        return rates;
     }
 }

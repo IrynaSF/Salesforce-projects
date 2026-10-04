@@ -18,34 +18,34 @@ public class CourseLessonsCount {
         insert less;
         System.debug('Quantity Lesson after insert:' + less);
         
-        //При связи Master-Detail так обновлять записи нельзя!!!!!
-        //При update нельзя менять Master-Detail
-        // поле — оно устанавливается только один раз при insert и потом заморожено
+        // With a Master-Detail relationship you can't update records like this!!!
+        // On update you can't change a Master-Detail
+        // field: it is set only once on insert and is frozen afterwards
         ////===================
         // //lessThree.Name = 'AuditLesson3';
         //lessThree.Course__c = course.Id;
         //update lessThree;
         //==============================
-        ////lessThree.Course__c = course.Id;, значение этого поля всё равно
-        // хранится в переменной lessThree в оперативной памяти.
-        //  Когда мы вызываем update lessThree;, 
-        //  Salesforce пытается отправить в базу данных все заполненные поля объекта.
-        //   Но так как для поля Master-Detail по умолчанию запрещено 
-        //   перепривязывание (Reparenting), система расценивает его при обновлении 
-        //   как «недоступное для редактирования» (Read-Only) и выбрасывает System.DmlException
+        ////lessThree.Course__c = course.Id; the value of this field is still
+        // held in the lessThree variable in memory.
+        //  When we call update lessThree;
+        //  Salesforce tries to send all populated fields of the object to the database.
+        //   But because reparenting is disabled by default for a Master-Detail field,
+        //   the system treats it as read-only on update
+        //   and throws a System.DmlException
        //================================
-       // Нужно создать новый (чистый)экземпляр объекта Lesson__c для 
-       // выполнения операции update, передав туда только Id записи и те поля, 
-       // которые  хотитим изменить.
+       // You need to create a new (clean) Lesson__c instance for
+       // the update, passing only the record Id and the fields
+       // you want to change.
        // 
         Lesson__c lessToUpdate = new Lesson__c();
-       lessToUpdate.Id = lessThree.Id;        // Передаем Id, чтобы Salesforce знал, какую запись обновлять
-        lessToUpdate.Name = 'AuditLesson3';    // Меняем только имя
+       lessToUpdate.Id = lessThree.Id;        // Pass the Id so Salesforce knows which record to update
+        lessToUpdate.Name = 'AuditLesson3';    // Change only the name
 
-    // Поле Course__c здесь пустое, поэтому Salesforce не будет пытаться его обновить
+    // The Course__c field is empty here, so Salesforce won't try to update it
       update lessToUpdate; 
         
-        //селектимся еще раз чтобы БД увидела наши изменения
+        // query again to see our changes in the database
         Course__c updated = [
             SELECT Id, Total_Lessons__c
             FROM Course__c 

@@ -3,11 +3,11 @@ import getChildrenByParent from '@salesforce/apex/ParentsLeadController.getChild
 export default class ParentsLeadLwc extends LightningElement {
 
     
-   @track status = '';// Пустая строка '' означает — пока ничего не показываем.Если бы мы сразу написали бы какой то текст то пользователь увдел бы его до того как нажал на кнопку
-   @track children = []; //список скрыт до поиска
-   @track hasChildren = false ;//пустой масив нам нужен для того чтобы потом вложить в него наших дитей
+   @track status = '';// An empty string '' means nothing is shown yet. If we set text right away, the user would see it before clicking the button
+   @track children = []; // the list is hidden until a search
+   @track hasChildren = false ;// flag that shows the list once children are loaded
 
-   //Для пагинации 
+   // For pagination
    @track currentPage = 0;
    @track totalChildren = 0;
    @track pageSize = 5;
@@ -22,17 +22,17 @@ export default class ParentsLeadLwc extends LightningElement {
  get displayRange() {
     const start = this.currentPage * this.pageSize + 1;
     const end = Math.min((this.currentPage + 1) * this.pageSize, this.totalChildren);
-    return `Shown ${start}-${end} из ${this.totalChildren}`;
+    return `Shown ${start}-${end} of ${this.totalChildren}`;
 }
 get totalPages() {
     return Math.ceil(this.totalChildren / this.pageSize);
 }
 
-    // ==== Метод при выборе родителя (ПЕРЕДЕЛАТЬ) ====
+    // ==== Handler when a parent is selected ====
     async handleParentChange(event) {
         this.selectedParentId = event.detail.recordId;
-        this.currentPage = 0;  // сброс на первую страницу при новом выборе родителя
-        await this.loadChildren();  // вызов общей логики (см. ниже)
+        this.currentPage = 0;  // reset to the first page when a new parent is selected
+        await this.loadChildren();  // call the shared logic (see below)
     }
 get pageNumbers() {
     const pages = [];
@@ -44,7 +44,7 @@ get pageNumbers() {
     }
     return pages;
 }
-    // ==== Метод кнопки Next (НОВЫЙ) ====
+    // ==== Next button handler ====
   async handleNextPage() {
     if ((this.currentPage + 1) * this.pageSize < this.totalChildren) {
         this.currentPage++;
@@ -63,7 +63,7 @@ async handlePageClick(event) {
     this.currentPage = Number(event.currentTarget.dataset.page) - 1;
     await this.loadChildren();
 }
-    // ==== Общая, переиспользуемая логика вызова Apex (НОВЫЙ, вынесенный из старого handleClick) ====
+    // ==== Shared, reusable Apex call logic (extracted from the old handleClick) ====
     async loadChildren() {
         if (!this.selectedParentId) {
             this.children = [];

@@ -5,25 +5,25 @@ export default class ScheduledJobsMonitor extends LightningElement {
     jobs = [];
     error;
 
-    // @wire — автоматически загружает данные
+    // @wire loads the data automatically
     @wire(getActiveJobs)
     wiredJobs({ data, error }) {
-        // если data — сохрани в jobs
-        // если error — сохрани в error и выведи в console.error
+        // if data: store it in jobs
+        // if error: store it in error and log it with console.error
         if (data) {
-            // Сохраняем данные, если они пришли успешно
+            // Store the data if it arrived successfully
             this.jobs = data;
             this.error = undefined;
         } else if (error) {
-            // Сохраняем/обрабатываем ошибку
+            // Store/handle the error
             this.error = error;
             this.jobs = [];
-            console.error('Ошибка загрузки:', error);
+            console.error('Loading error:', error);
         }
     }
 
 
-     // Геттер — преобразует вложенные поля
+     // Getter: flattens the nested fields
     get formattedJobs() {
         return this.jobs.map(job => ({
             Id:             job.Id,
@@ -34,15 +34,15 @@ export default class ScheduledJobsMonitor extends LightningElement {
         }));
     }
 
-    // Геттер — количество jobs
+    // Getter: number of jobs
     get totalJobs() {
-        // верни количество
+        // return the count
         return this.jobs ? this.jobs.length : 0;
     }
 
-    // Геттер — список пустой?
+    // Getter: is the list empty?
     get isEmpty() {
-        // верни true если пустой
+        // return true if empty
          return !this.jobs || this.jobs.length === 0;
     }
 }

@@ -3,10 +3,10 @@ public class WireLwcControllerTest {
     
     @TestSetup
     static void setupTestData() {
-        // Создаем Аккаунт
+        // Create an Account
         Account acc = new Account(Name = 'TestAccountWire', Phone = '16449165', Industry = 'Banking');
         insert acc;
-        // Создаем связанные Opportunity (так как метод getOpportunities ищет именно их)
+        // Create related Opportunities (since getOpportunities looks for exactly these)
         insert new List<Opportunity>{
             new Opportunity(Name = 'Opp 1', StageName = 'Prospecting', CloseDate = Date.today(), AccountId = acc.Id),
             new Opportunity(Name = 'Opp 2', StageName = 'Prospecting', CloseDate = Date.today(), AccountId = acc.Id)
@@ -14,25 +14,25 @@ public class WireLwcControllerTest {
     }
     @isTest
     static void testGetAccounts() {
-        // Тест для метода получения аккаунтов
+        // Test for the method that gets accounts
         Test.startTest();
         List<Account> result = WireLwcController.getAccounts();
         Test.stopTest();
-        System.assertEquals(1, result.size(), 'Должен быть 1 аккаунт');
+        System.assertEquals(1, result.size(), 'There should be 1 account');
     }
     @isTest
     static void testGetOpportunities() {
-        // 1. Получаем ID созданного в setupTestData аккаунта
+        // 1. Get the ID of the account created in setupTestData
         Account acc = [SELECT Id FROM Account LIMIT 1];
      
-        // 2. Вызываем метод
+        // 2. Call the method
         Test.startTest();
-        // Передаем реальную переменную acc.Id, а не объявление типа (Id accountId)
+        // Pass the real variable acc.Id, not a type declaration (Id accountId)
         List<Opportunity> result = WireLwcController.getOpportunities(acc.Id);
         Test.stopTest();
-        // 3. ПРОВЕРКА (Assert)
-        // Мы создали 2 Opportunity для этого аккаунта
-        System.assertEquals(2, result.size(), 'Список возможностей должен содержать 2 записи');
-        System.assertEquals('Opp 1', result[0].Name, 'Имя первой возможности не совпадает');
+        // 3. CHECK (Assert)
+        // We created 2 Opportunities for this account
+        System.assertEquals(2, result.size(), 'The opportunity list should contain 2 records');
+        System.assertEquals('Opp 1', result[0].Name, 'The first opportunity name does not match');
     }
 }

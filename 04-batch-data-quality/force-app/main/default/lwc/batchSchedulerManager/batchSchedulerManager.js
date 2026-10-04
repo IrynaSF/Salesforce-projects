@@ -12,15 +12,15 @@ export default class BatchSchedulerManager extends LightningElement {
     jobStatus     = 'NOT STARTED';
     wiredResult;
 
-    // Варианты Batch классов
+    // Batch class options
     batchOptions = [
         { label: 'Account Summary',       value: 'AccountSummaryBatch' },
-        { label: 'Contact Health Check',  value: 'ContactHealthCheckBatch' },
+        { label: 'Contact Department',    value: 'ContactDepartmentBatch' },
         { label: 'Lead Engagement',       value: 'LeadEngagementBatch' },
         { label: 'Opportunity Pipeline',  value: 'OpportunityPipelineBatch' }
     ];
 
-    // Варианты времени
+    // Time options
     timeOptions = [
         { label: '08:00', value: '08:00' },
         { label: '10:00', value: '10:00' },
@@ -28,7 +28,7 @@ export default class BatchSchedulerManager extends LightningElement {
         { label: '18:00', value: '18:00' }
     ];
 
-    // Загружаем статус при открытии компонента
+    // Load the status when the component opens
     @wire(getJobStatus)
     wiredStatus(result) {
         this.wiredResult = result;
@@ -37,17 +37,17 @@ export default class BatchSchedulerManager extends LightningElement {
         }
     }
 
-    // Выбор Batch из списка
+    // Batch selection from the list
     handleBatchChange(event) {
         this.selectedBatch = event.detail.value;
     }
 
-    // Выбор времени из списка
+    // Time selection from the list
     handleTimeChange(event) {
         this.selectedTime = event.detail.value;
     }
 
-    // Кнопка Launch
+    // Launch button
     async handleLaunch() {
         try {
             const result = await startJob({
@@ -61,7 +61,7 @@ export default class BatchSchedulerManager extends LightningElement {
         }
     }
 
-    // Кнопка Stop
+    // Stop button
     async handleStop() {
         try {
             const result = await stopJob();
@@ -72,7 +72,7 @@ export default class BatchSchedulerManager extends LightningElement {
         }
     }
 
-    // Toast уведомление
+    // Toast notification
     showToast(title, message, variant) {
         this.dispatchEvent(new ShowToastEvent({ title, message, variant }));
     }

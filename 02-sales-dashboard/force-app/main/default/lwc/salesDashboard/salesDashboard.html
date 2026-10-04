@@ -13,7 +13,7 @@
         </lightning-input>
     </div>
 </template>
-<!-- 2. lightning-accordion с аккаунтами -->
+<!-- 2. lightning-accordion with accounts -->
  <lightning-accordion>
 
 
@@ -40,11 +40,11 @@
     <lightning-button label="Next" onclick={handleNextPage}></lightning-button>
 </template>
 <template lwc:if={isModalOpen}>
-    <!-- Подложка (затемнение фона) -->
+    <!-- Backdrop (darkened background) -->
     <div class="slds-backdrop slds-backdrop_open"></div>
 
 
-    <!-- Модальное окно -->
+    <!-- Modal window -->
     <section role="dialog" class="slds-modal slds-fade-in-open">
         <div class="slds-modal__container">
            
@@ -54,7 +54,7 @@
 
 
             <div class="slds-modal__content slds-p-around_medium">
-                <!-- Таблица товаров -->
+                <!-- Products table -->
                 <lightning-datatable
   data={products}
     columns={productColumns}

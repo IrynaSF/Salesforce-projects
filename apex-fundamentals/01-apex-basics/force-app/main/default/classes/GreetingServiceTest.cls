@@ -2,15 +2,15 @@
 private class GreetingServiceTest {
     @isTest
     static void testGetGreeting() {
-        // Шаг 1: создать тестовую запись Account
+        // Step 1: create a test Account record
         Account testAccount = new Account();
         testAccount.Name = 'Test Account';
         insert testAccount;
           Test.startTest();
-        // Шаг 2: вызов тестируемого метода — МЕЖДУ startTest() и stopTest()
+        // Step 2: call the method under test BETWEEN startTest() and stopTest()
         String result = GreetingService.getGreeting(testAccount.Id);
         Test.stopTest();
-           // Шаг 3: проверка — ПОСЛЕ stopTest()
+           // Step 3: check AFTER stopTest()
         System.assertEquals('Hello, Test Account!', result);
     }
 }

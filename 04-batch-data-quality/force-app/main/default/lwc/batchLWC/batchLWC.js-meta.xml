@@ -9,14 +9,14 @@
     <targetConfigs>
         <targetConfig targets="lightning__AppPage,lightning__HomePage">
 
-            <!-- Имя Batch класса — вводится в App Builder -->
+            <!-- Batch class name, entered in App Builder -->
             <property
                 name="batchName"
                 type="String"
                 label="Batch Class Name"
                 description="For example: AccountSummaryBatch"/>
 
-            <!-- Cron расписание — вводится в App Builder -->
+            <!-- CRON schedule, entered in App Builder -->
             <property
                 name="cronTime"
                 type="String"

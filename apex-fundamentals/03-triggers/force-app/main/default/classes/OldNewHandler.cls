@@ -1,28 +1,28 @@
 public with sharing class OldNewHandler {
-    //Логика для события Before Update: изменения полей самой записи. 
+    // Logic for the Before Update event: changing fields on the record itself.
     public static void handlerBeforUpdate (List<Opportunity> newOpp,List<Opportunity> oldOpp){
         List<Task> tasksToCreate = new List<Task>();
 
-   //  Проходим по списку с использованием индекса, чтобы связать конкретную старую версию записи с её же конкретной новой версией
+   //  Loop by index to pair each old version of a record with its own new version
    for (Integer i = 0; i < oldOpp.size(); i++){
         Opportunity oldRecord = oldOpp[i];
         Opportunity newRecord = newOpp[i];
 
-    //Проверяем, что у конкретной записи поле Amount не пустое ни в старой, ни в новой версии, и что у неё же сумма была меньше 2000, а стала 2000 или больше
+    // Check that Amount is not empty in both the old and the new version, and that it was below 2000 and became 2000 or more
         if(oldRecord.Amount != null  &&  newRecord.Amount != null  && oldRecord.Amount < 2000  &&  newRecord.Amount >= 2000 ){
             newRecord.StageName = 'Negotiation/Review';
             System.debug('Amount crossed 2000 threshold, Stage auto-set to Negotiation/Review');
-            //После того как сделка переведена в новую стейдж, формируется таск. 
-              Task alertTask = new Task(); //Создаем новый таск. 
-                alertTask.Subject = 'Contact client — deal moved to Negotiation/Review (Amount ≥ 2000)';//Здесь мы задаем значение поля Subject: то, что увидит пользователь, как Название задачи  в списке Tasks. 
+            // Once the deal moves to the new stage, a task is created.
+              Task alertTask = new Task(); // Create a new task.
+                alertTask.Subject = 'Contact client — deal moved to Negotiation/Review (Amount ≥ 2000)';// Set the Subject: what the user sees as the task name in the Tasks list.
                 alertTask.WhatId = newRecord.Id;//*
-                tasksToCreate.add(alertTask);//Здесь мы добавляем наш таск. 
+                tasksToCreate.add(alertTask);// Add our task.
 
 
         }
    }
-     if (!tasksToCreate.isEmpty()) { //Проверяем, чтобы наш таск не был пустым. 
-    insert tasksToCreate;//Инсертим наш таск в организацию. 
+     if (!tasksToCreate.isEmpty()) { // Make sure the task list is not empty.
+    insert tasksToCreate;// Insert the tasks into the org.
 }
 
     }

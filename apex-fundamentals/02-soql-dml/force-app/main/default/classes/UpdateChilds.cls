@@ -7,10 +7,10 @@ public class UpdateChilds {
            
         ];
          System.debug('Befor update:' + childs );
-//Меням имена в нашем списке
-//Integer i = 0- инициализируем нашу переменную значением 0
-//i < childs.size(); указываем условие
-//i++ Увеличьте значение переменной на единицу
+// Change the names in our list
+//Integer i = 0: initialize our variable with 0
+//i < childs.size(): the loop condition
+//i++: increase the variable by one
 for (Integer i = 0; i < childs.size(); i++) {
     childs[i].Name = 'ChildTest' + (i + 1);
 }

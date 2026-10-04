@@ -31,7 +31,7 @@ The card shows city and country, temperature, humidity, wind speed and a weather
 ## Org setup required
 
 - **Named Credential** `OpenWeatherMap_Auth` → `https://api.openweathermap.org`
-- **Custom Metadata Type** `Weather_Setting__mdt` with fields `Api_Key__c`, `Default_City__c` and one record holding your own API key
+- **Custom Metadata record** of `Weather_Setting__mdt` (the type is included) holding your own API key and default city
 - Static Resources for icons: `weatherClear`, `weatherRain`, `weatherSnow`, `weatherClouds`, `weatherThunderstorm`, `weatherFog`, `weatherWind`, `weatherDefault`
 
 > The API key is never hard-coded. It lives in a Custom Metadata record in the org and is not part of this repository.

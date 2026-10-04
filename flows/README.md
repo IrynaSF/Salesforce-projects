@@ -1,6 +1,6 @@
 # Flow Automation (Flow Builder)
 
-Declarative automation built with record-triggered Flows before moving on to Apex. They live in the org; below is a description of each flow's design.
+Declarative automation built with record-triggered Flows before moving on to Apex. The Flow metadata is in [`force-app/main/default/flows`](force-app/main/default/flows), together with the `Lead.Product__c` field used by the lead-conversion flow.
 
 | Flow | Trigger | Logic |
 |------|---------|-------|

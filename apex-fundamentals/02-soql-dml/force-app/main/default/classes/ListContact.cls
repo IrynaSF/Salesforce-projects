@@ -1,9 +1,9 @@
 public class ListContact {
     public static void OneContact(){
-        List<Contact> cont = new  List<Contact>();//Создаем пстой список
-        Contact con = new Contact();// создаем один новый обьект
+        List<Contact> cont = new  List<Contact>();// Create an empty list
+        Contact con = new Contact();// create one new object
         con.LastName = 'Smith';
-        cont.add(con); // добавляем этот контакт в список
+        cont.add(con); // add this contact to the list
         System.debug(cont);
     }
 

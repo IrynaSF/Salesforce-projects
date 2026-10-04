@@ -3,15 +3,15 @@ public class DepartmentEmployee {
         
      Department__c existingDept = [SELECT Id, Name FROM Department__c WHERE Name = 'IT' LIMIT 1];
         
-        //2.Создаем список Employee (наш ребенек) из трех записей
+        //2. Create a list of three Employee records (our child)
        List<Employee__c> emploees = new  List<Employee__c> ();
         
         Employee__c emplPeter = new Employee__c();
          emplPeter.Name = 'Peter Wills';
          emplPeter.Position__c = 'Developer';
          emplPeter.Salary__c = 120000;
-        ////привязки к Department через Lookup поле Department__c
-        //так как у нас связь через Lookup между Employee__c и Department__c
+        //// linked to Department through the Department__c Lookup field
+        // since Employee__c and Department__c are related by a Lookup
          emplPeter.Department__c = existingDept.Id;
          emploees.add(emplPeter);
         
@@ -22,27 +22,27 @@ public class DepartmentEmployee {
          emplBetty.Department__c = existingDept.Id;
          emploees.add(emplBetty);
         
-        ///Добавляем несуществующую запись, чтобы вызвать ошибку. 
+        /// Add a non-existent record to trigger an error.
         Employee__c emplMishel = new Employee__c();
          emplMishel.Name = 'Mishel Korby';
          emplMishel.Position__c = 'Designer';
          emplMishel.Salary__c = 900000;
-         emplMishel.Department__c = '001000000000000AAA';//Не существующая запись. 
+         emplMishel.Department__c = '001000000000000AAA';// Non-existent record.
          emploees.add(emplMishel);
         
-        //3.оборачиваем insert emploees в try/catch/finally
+        //3. Wrap insert employees in try/catch/finally
         try{
-            //выполняем DML операцию
+            // perform the DML operation
             insert emploees;
             System.debug('Employees after insert: ' + emploees);
         }catch(DmlException e){
-            //Ловим ошибку и выводим описание в лог
+            // Catch the error and log its description
             System.debug('Error inserting employees: ' + e.getMessage());
         }finally{
             System.debug('Insert completed');
         }      
         
-            //4.Селектим родителя с ребенком
+            //4. Query the parent with its children
         
         List<Department__c> department = [
             SELECT Id, Name,
@@ -52,7 +52,7 @@ public class DepartmentEmployee {
         ];
         System.debug(department);
         
-        //Проверяем можем ли мы манипулировать с нашими данными
+        // Check that we can work with our data
         emploees[0].Position__c = 'Senior Developer';
          update emploees[0];
     }

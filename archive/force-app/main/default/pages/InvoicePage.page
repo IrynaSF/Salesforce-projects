@@ -8,7 +8,7 @@
 <html>
 <head>
     <style type="text/css">
-        /* Настройки страницы A4 */
+        /* A4 page settings */
         @page {
             size: A4;
             margin: 0;
@@ -22,7 +22,7 @@
             padding: 0;
         }
         
-        /* ===== ШАПКА (повторяется на каждой странице) ===== */
+        /* ===== HEADER (repeated on every page) ===== */
         .header {
             display: table-header-group;
         }
@@ -32,7 +32,7 @@
             background-color: #f5f5f5;
         }
         
-        /* Оранжевая полоса сверху */
+        /* Orange bar at the top */
         .orange-bar {
             background-color: #E8531D;
             height: 8px;
@@ -40,7 +40,7 @@
             display: block;
         }
         
-        /* Блок с лого и названием компании */
+        /* Block with the logo and company name */
         .company-block {
             display: table;
             width: 100%;
@@ -121,12 +121,12 @@
             padding-bottom: 3px;
         }
         
-        /* ===== ТЕЛО ДОКУМЕНТА ===== */
+        /* ===== DOCUMENT BODY ===== */
         .body-content {
             padding: 20px 30px;
         }
         
-        /* Секция Bill To */
+        /* Bill To section */
         .bill-to-label {
             color: #E8531D;
             font-weight: bold;
@@ -143,7 +143,7 @@
             margin-bottom: 25px;
         }
         
-        /* ===== ТАБЛИЦА ТОВАРОВ ===== */
+        /* ===== PRODUCTS TABLE ===== */
         .products-table {
             width: 100%;
             border-collapse: collapse;
@@ -185,7 +185,7 @@
             text-align: right;
         }
         
-        /* Итоговая сумма */
+        /* Total amount */
         .balance-row {
             text-align: right;
             margin-top: 5px;
@@ -206,7 +206,7 @@
             display: inline-block;
         }
         
-        /* ===== ФУТЕР (повторяется на каждой странице) ===== */
+        /* ===== FOOTER (repeated on every page) ===== */
         .footer {
             display: table-footer-group;
         }
@@ -219,7 +219,7 @@
             border-top: 1px solid #ddd;
         }
         
-        /* Для корректного повторения шапки/футера в PDF */
+        /* For correct header/footer repetition in the PDF */
         table.page-table {
             width: 100%;
             border-collapse: collapse;
@@ -228,21 +228,21 @@
 </head>
 <body>
 
-<!-- Используем таблицу для повторения шапки и футера -->
+<!-- Use a table to repeat the header and footer -->
 <table class="page-table">
 
-    <!-- ШАПКА — повторяется на каждой странице -->
+    <!-- HEADER: repeated on every page -->
     <thead>
         <tr>
             <td>
-                <!-- Оранжевая полоса -->
+                <!-- Orange bar -->
                 <div class="orange-bar"></div>
                 
-                <!-- Блок компании и INVOICE -->
+                <!-- Company block and INVOICE -->
                 <div class="header-content">
                     <div class="company-block">
                         
-                        <!-- Левая часть: лого + данные компании -->
+                        <!-- Left part: logo + company details -->
                         <div class="company-left">
                             <div class="logo-circle">LOGO</div>
                             <div class="company-info">
@@ -261,7 +261,7 @@
                             </div>
                         </div>
                         
-                        <!-- Правая часть: INVOICE + дата + номер -->
+                        <!-- Right part: INVOICE + date + number -->
                         <div class="company-right">
                             <div class="invoice-title">INVOICE</div>
                             <div class="invoice-meta">
@@ -284,7 +284,7 @@
         </tr>
     </thead>
 
-    <!-- ФУТЕР — повторяется на каждой странице -->
+    <!-- FOOTER: repeated on every page -->
     <tfoot>
         <tr>
             <td>
@@ -295,13 +295,13 @@
         </tr>
     </tfoot>
 
-    <!-- ТЕЛО ДОКУМЕНТА -->
+    <!-- DOCUMENT BODY -->
     <tbody>
         <tr>
             <td>
                 <div class="body-content">
                     
-                    <!-- Секция Bill To -->
+                    <!-- Bill To section -->
                     <div class="bill-to-label">BILL TO</div>
                     <div class="bill-to-info">
                         <apex:outputPanel rendered="{!primaryContact != null}">
@@ -315,7 +315,7 @@
                         </apex:outputPanel>
                     </div>
 
-                    <!-- Таблица товаров -->
+                    <!-- Products table -->
                     <table class="products-table">
                         <thead>
                             <tr>

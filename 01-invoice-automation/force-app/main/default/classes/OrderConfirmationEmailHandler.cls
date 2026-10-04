@@ -2,25 +2,25 @@ global class OrderConfirmationEmailHandler implements Messaging.InboundEmailHand
     global Messaging.InboundEmailResult handleInboundEmail(
         Messaging.InboundEmail email, 
         Messaging.InboundEnvelope envelope) {
-       //1.Получаем: Messaging.InboundEmail и обновляем Opportunity
+       //1. Receive Messaging.InboundEmail and update the Opportunity
        Messaging.InboundEmailResult result = new Messaging.InboundEmailResult();
-//2. Парсим Subject: "Invoice INV-000001 - Umbrella" → достаём INV-000001
-//String.split() — разбить строку по разделителю
+//2. Parse the Subject: "Invoice INV-000001 - Umbrella" → extract INV-000001
+//String.split() splits a string by a delimiter
 String subject = email.subject;
 String[] parts = subject.split(' ');
 String invoiceNumber = parts[1];
-//3.Ищем Opportunity WHERE Invoice_Number__c = 'INV-000001'
-//SOQL Схема 
-// защита — что если Opportunity не найдена - Обернуть в список:
+//3. Find the Opportunity WHERE Invoice_Number__c = 'INV-000001'
+//SOQL pattern
+// guard: what if the Opportunity is not found? Wrap the result in a list:
 List<Opportunity> opps = [SELECT Id, StageName FROM Opportunity 
                            WHERE Invoice_Number__c = :invoiceNumber 
                            LIMIT 1];
 
 if (!opps.isEmpty()) {
     Opportunity opp = opps[0];
-    //4.Проверяем Stage = 'Negotiation/Review'
+    //4. Check Stage = 'Negotiation/Review'
     if (opp.StageName == 'Negotiation/Review'){
-        //5.Парсим Body письма на слово Approved или Rejected
+        //5. Parse the email Body for the word Approved or Rejected
        if (email.plainTextBody.contains('Approved')) {
     //6.Approved → Stage = 'Closed Won'
     
@@ -29,7 +29,7 @@ if (!opps.isEmpty()) {
 //7.Rejected → Stage = 'Closed Lost'
  opp.StageName = 'Closed Lost'; 
 }
-//8.Обновляем Opportunity
+//8. Update the Opportunity
 update opp; 
     }
 }  

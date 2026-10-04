@@ -2,13 +2,13 @@ public with sharing class RatesLogi {
        @AuraEnabled(cacheable=true)
     public static CurrencyDisplayWrapper getCurrencyRatesCalculator(String selectedCurrency) {
 
-        //Шаг 1: получить последний лог
+        // Step 1: get the latest log
         List<Currency_Rate_Log__c>  lastLog = [SELECT Id, Base_Currency__c, Update_DateTime__c,Status__c FROM Currency_Rate_Log__c ORDER BY Update_DateTime__c DESC LIMIT 1];
         System.debug('Logs found: ' + lastLog.size());
         
         Currency_Rate_Log__c Log;
 
-       // ifзапись лога существует работаем дальше, else вызываем метод постучаться на api
+       // if a log record exists, continue; otherwise call the method that hits the API
     if (!lastLog.isEmpty()) {
     Log = lastLog[0];
 } else {
@@ -16,11 +16,11 @@ public with sharing class RatesLogi {
 }
 
 
-        //Шаг 2: получить все связанные курсы валют
+        // Step 2: get all related currency rates
         List<Currency_Rate__c> currencyRates = [SELECT Currency_Code__c, Rate__c FROM Currency_Rate__c WHERE Currency_Rate_Log__c = :Log.Id];
         System.debug('Found ' + currencyRates.size() + ' currency rates');
 
-        //Шаг 3: создать Map с курсами валют
+        // Step 3: build a Map of currency rates
         Map<String, Decimal> rates = new Map<String, Decimal>();
 
         for (Currency_Rate__c rate : currencyRates) {
@@ -29,18 +29,18 @@ public with sharing class RatesLogi {
 
         System.debug('Rates map size: ' + rates.size());
 
-        //получить курс выбранной валюты (selectedCurrency) из ratesполучить курс выбранной валюты (selectedCurrency) из rates
+        // get the rate of the selected currency (selectedCurrency) from rates
         Decimal baseRate = rates.get(selectedCurrency);
 
         System.debug('Base rate for ' + selectedCurrency + ': ' + baseRate);
 
-Map<String, Decimal> recalculatedRates = CurrencyRatesCalculator.getCalculalatorSelectedCurrency(rates, baseRate);//Вызываем наш третий метод. 
+Map<String, Decimal> recalculatedRates = CurrencyRatesCalculator.getCalculalatorSelectedCurrency(rates, baseRate);// Call our third method.
 
-CurrencyDisplayWrapper result = new CurrencyDisplayWrapper();//Создаём объект-обёртку, в который будем складывать результаты
+CurrencyDisplayWrapper result = new CurrencyDisplayWrapper();// Create the wrapper object that collects the results
 
-result.rates = recalculatedRates; //Сохраняем в объект-обёртку пересчитанные курсы валют
-result.updateDateTime = Log.Update_DateTime__c; //Сохраняем в объект-обёртку дату и время последнего обновления курсов валют
-result.status = Log.Status__c; //Сохраняем в объект-обёртку статус последнего обновления курсов валют
+result.rates = recalculatedRates; // Store the recalculated currency rates in the wrapper
+result.updateDateTime = Log.Update_DateTime__c; // Store the date and time of the last rates update in the wrapper
+result.status = Log.Status__c; // Store the status of the last rates update in the wrapper
 
 return result;
 

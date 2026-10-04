@@ -2,29 +2,29 @@ import { LightningElement,track } from 'lwc';
 import findAccount from '@salesforce/apex/accountController.findAccount';
 export default class AccountLWC extends LightningElement {
   
-    //@track status это переменная, в которой будет храниться текст, показанный на экране.
-    // это как "включить уведомления" для LWC: "если эта переменная изменится — сразу обнови экран"
-    //Почему сначала пустая 
-//До нажатия кнопки — status пустая, значит на странице ничего не написано под кнопкой.
-//После нажатия — внутри .then() или .catch() мы записываем туда текст
-//  (например 'Found: Dickenson plc'), и благодаря @track экран автоматически покажет этот текст.
-    @track status;//Переменная с начальным значением 
+    //@track status is the variable holding the text shown on screen.
+    // it's like "turning on notifications" for LWC: "if this variable changes, re-render right away"
+    // Why it starts empty
+// Before the button is clicked, status is empty, so nothing is shown under the button.
+// After the click, inside .then() or .catch() we write text into it
+//  (e.g. 'Found: Dickenson plc'), and thanks to @track the screen shows that text automatically.
+    @track status;// Variable with an initial value
 
-   handleClick(){//Это метод (функция), который запускается, когда пользователь нажимает кнопку в HTML (потому что мы написали onclick={handleClick}).
-   //Здесь мы вызываем Apex метод, который мы написали раньше. Он уходит на сервер Salesforce, выполняет SOQL запрос (ищет 'Dickenson plc'), 
-   // //и возвращает результат — но не сразу, а через Promis
+   handleClick(){// This method runs when the user clicks the button in the HTML (because we wrote onclick={handleClick}).
+   // Here we call the Apex method we wrote earlier. It goes to the Salesforce server, runs the SOQL query (looks for 'Dickenson plc'),
+   // // and returns the result, not immediately but through a Promise
    console.log('Button clicked, calling Apex...');
     findAccount()
    
     .then(result => { console.log('Promise resolved, result:', result);
-         this.status = 'Found:' + result.Name })//если метод нашел аккаунт (т.е не выбросил ошибку throw) срабатывет этот блок
+         this.status = 'Found:' + result.Name })// this block runs if the method found the account (i.e. didn't throw)
     
          .catch(error => {  console.log('Promise rejected, error:', error);
-        this.status = 'Account is not found' })//если метод не нашел аккаунт то срабатывает этот блок
+        this.status = 'Account is not found' })// this block runs if the method didn't find the account
     
-        .finally(() => { console.log('Search completed') });//Этот блок срабатывает всегда — независимо от того, был ли успех (.then()) или ошибка (.catch()).
+        .finally(() => { console.log('Search completed') });// This block always runs, regardless of success (.then()) or error (.catch()).
    }
 
 }
-//Точка перед .then()/.catch()/.finally() означает: "возьми то, что вернул предыдущий шаг (Promise), и вызови у него этот метод". Без точки JS не понял бы, что мы хотим обратиться именно к методу Promise,
-//  а не создать что-то новое.
+// The dot before .then()/.catch()/.finally() means: "take what the previous step returned (a Promise) and call this method on it". Without the dot JS wouldn't know we want to call a Promise method,
+//  rather than create something new.

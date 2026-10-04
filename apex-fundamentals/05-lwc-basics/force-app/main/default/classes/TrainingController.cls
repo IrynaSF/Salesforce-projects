@@ -2,7 +2,7 @@ public with sharing class TrainingController {
 
     @AuraEnabled(cacheable=true)
 
-    //Первый метод который забирает необходимую информацию
+    // First method: retrieves the required information
     public static List<Training__c> getTrainings() {
         List<Training__c> train = [
             SELECT Id, Name,  Course_Name__c, Status__c, Completion_Date__c, Contact__c 
@@ -19,20 +19,20 @@ List<Training__c> updStatus = [
     SELECT Id FROM Training__c WHERE Id = :trainingId
 ];
 
-//Присвоить новое значение полю Status__c у найденной записи
+// Assign a new value to the Status__c field of the found record
 updStatus[0].Status__c = newStatus;
 
-//Обновляем поля у обьекта
+// Update the object's fields
 update updStatus;
 
     }
 }
 
 
-//updStatus — это список (List<Training__c>), который вернул наш SOQL запрос. Даже если нашлась одна запись — она всё равно лежит внутри списка.
-//updStatus[0] — берём первый (и единственный) элемент из этого списка — это наш конкретный объект Training__c.
-//.Status__c = newStatus — присваиваем полю Status__c этого объекта новое значение из параметра newStatus (того, что передали снаружи при вызове метода).
-//Важно — на этом шаге изменение произошло только в памяти (в переменной updStatus), но в базе данных Salesforce ничего ещё не изменилось!
+//updStatus is the list (List<Training__c>) returned by our SOQL query. Even if one record is found, it is still inside a list.
+//updStatus[0]: take the first (and only) element of the list, our specific Training__c object.
+//.Status__c = newStatus: assign the newStatus parameter value (passed in from outside) to this object's Status__c field.
+// Important: at this step the change exists only in memory (in updStatus); nothing has changed in the Salesforce database yet!
 
 
 
@@ -40,4 +40,4 @@ update updStatus;
 
 
 
-// Salesforce все кастомные объекты (те, что мы создаем сами, в отличие от стандартных типа Account, Contact, Lead) автоматически получают суффикс __c в своём API Name.
+// In Salesforce all custom objects (the ones we create, unlike standard ones such as Account, Contact, Lead) automatically get the __c suffix in their API Name.

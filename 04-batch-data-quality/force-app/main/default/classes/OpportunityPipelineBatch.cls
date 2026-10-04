@@ -1,9 +1,9 @@
 public class OpportunityPipelineBatch implements Database.Batchable<sObject> {
 
     public Database.QueryLocator start(Database.BatchableContext bc) {
-        // Найди Opportunity где:
-        // CloseDate < TODAY (просрочена)
-        // IsClosed = false (ещё не закрыта)
+        // Find Opportunities where:
+        // CloseDate < TODAY (overdue)
+        // IsClosed = false (not closed yet)
                    return Database.getQueryLocator(
  'SELECT Id, Name, CloseDate, StageName ' +
 'FROM Opportunity ' +
