@@ -1,0 +1,127 @@
+<apex:page standardController="Opportunity" extensions="VisualController" renderAs="pdf" applyBodyTag="false">
+    <head>
+       // 2. Слой стилей 
+       <style>
+            /* Настройки печатного листа A4 */
+            @page {
+                size: A4; /* Формат бумаги */
+                margin: 0; /* Убираем поля, чтобы оранжевая полоса вверху прилегала к краям */
+                
+                /* Специальная область внизу страницы для футера */
+                @bottom-center {
+                    /* content: Выводит текст внизу каждой страницы PDF */
+                    content: "Company: {!companyInfo.Name}"; 
+                    font-size: 10pt;
+                    color: #808080; /* Серый цвет текста */
+                }
+            }
+            
+            /* Базовый шрифт и сброс отступов для всего документа */
+            body { font-family: sans-serif; margin: 0; padding: 0; }
+
+            /* Оранжевая декоративная полоса в самом верху (как на картинке в задании) */
+            .header-bar { background-color: #FF5722; height: 20px; width: 100%; }
+
+            /* Контейнер для контента с внутренними отступами от краев листа */
+            .content { padding: 40px; }
+
+            /* Блок ЛОГО: серый круг с белым текстом посередине */
+            .logo-circle { 
+                background: #777; 
+                color: white; 
+                width: 60px; 
+                height: 60px; 
+                border-radius: 50%; /* Делает квадрат круглым */
+                text-align: center; 
+                line-height: 60px; /* Центрирует текст внутри по вертикали */
+                font-size: 10pt;
+            }
+
+            /* Заголовок INVOICE: большой, серый, прижат к правому краю */
+            .invoice-title { text-align: right; color: #777; font-size: 24pt; margin: 0; }
+            
+            /* Стили для таблиц: растягиваем на всю ширину и убираем двойные рамки */
+            table { width: 100%; border-collapse: collapse; margin-top: 30px; }
+            
+            /* Шапка таблицы: оранжевый фон, белый жирный текст */
+            th { background-color: #FF5722; color: white; padding: 10px; text-align: left; }
+            
+            /* Ячейки таблицы: отступы и тонкая линия снизу для разделения товаров */
+            td { padding: 10px; border-bottom: 1px solid #eee; }
+            
+            /* Розовый блок для итоговой суммы (Balance Due) */
+            .balance-box { 
+                float: right; /* Сдвигает весь блок вправо */
+                margin-top: 20px; 
+                background-color: #F8D7DA; /* Светло-розовый фон */
+                padding: 10px 20px; 
+                font-weight: bold; 
+                font-size: 16pt;
+            }
+        </style >
+    </head>
+ // 3.«фундамент» шапки  инвойса.
+    <div class="header-bar"></div>
+    
+    <div class="content">
+        <table style="border:none;">
+            <tr>
+                <td style="border:none; width: 50%;">
+                    <div class="logo-circle">LOGO</div>
+                    <p>
+                        <strong>{!companyInfo.Name}</strong><br/>
+                        {!companyInfo.Street}, {!companyInfo.City}
+                    </p>
+                </td>
+                //4.Правая часть «шапки»
+                <td style="border:none; text-align:right; vertical-align:top;">
+                    <h1 class="invoice-title">INVOICE</h1>
+                    <p>DATE:<apex:outputText value="{0, date, MMMM d, yyyy}">
+        <apex:param value="{!generationDate}" />
+    </apex:outputText>
+</p>
+        // 5.номер инвойса            
+        <p><strong>INVOICE NO. {!opp.Invoice_Number__c}</strong></p>
+                </td>
+            </tr>
+        </table>
+
+        //6.«BILL TO»
+        <div style="margin-top:40px;">
+            <h4 style="color: #303F9F; border-bottom: 1px solid #303F9F; padding-bottom: 5px;">BILL TO</h4>
+            <p>
+                {!primaryContact.Contact.Name}<br/>
+                {!primaryContact.Opportunity.Account.Name}<br/>
+                {!primaryContact.Contact.Phone}<br/>
+                {!primaryContact.Contact.Email}
+            </p>
+        </div>
+     
+        // 7.таблица со списком товаров
+        <table>
+            <thead>
+                <tr>
+                    <th>PRODUCT NAME</th>
+                    <th>QUANTITY</th>
+                    <th>UNIT PRICE</th>
+                    <th>TOTAL</th>
+                </tr>
+            </thead>
+            <tbody>
+                //8.Visualforce превращает список данных из Apex в аккуратные строки инвойса
+                <apex:repeat value="{!lineItems}" var="item">
+                    <tr>
+                        <td>{!item.PricebookEntry.Product2.Name}</td>
+                        <td>{!item.Quantity}</td>
+                        <td>${!item.UnitPrice}</td>
+                        <td>${!item.TotalPrice}</td>
+                    </tr>
+                </apex:repeat>
+            </tbody>
+        </table>
+
+        <div class="balance-box">
+            Balance Due &nbsp;&nbsp; ${!opp.Amount}
+        </div>
+    </div>
+</apex:page>

@@ -1,0 +1,55 @@
+{
+  "packageDirectories": [
+    {
+      "path": "01-invoice-automation/force-app",
+      "default": true
+    },
+    {
+      "path": "02-sales-dashboard/force-app",
+      "default": false
+    },
+    {
+      "path": "03-scheduled-jobs-manager/force-app",
+      "default": false
+    },
+    {
+      "path": "04-batch-data-quality/force-app",
+      "default": false
+    },
+    {
+      "path": "05-weather-widget/force-app",
+      "default": false
+    },
+    {
+      "path": "06-currency-rates/force-app",
+      "default": false
+    },
+    {
+      "path": "apex-fundamentals/01-apex-basics/force-app",
+      "default": false
+    },
+    {
+      "path": "apex-fundamentals/02-soql-dml/force-app",
+      "default": false
+    },
+    {
+      "path": "apex-fundamentals/03-triggers/force-app",
+      "default": false
+    },
+    {
+      "path": "apex-fundamentals/04-sharing-model/force-app",
+      "default": false
+    },
+    {
+      "path": "apex-fundamentals/05-lwc-basics/force-app",
+      "default": false
+    },
+    {
+      "path": "archive/force-app",
+      "default": false
+    }
+  ],
+  "name": "salesforce-portfolio",
+  "namespace": "",
+  "sourceApiVersion": "66.0"
+}

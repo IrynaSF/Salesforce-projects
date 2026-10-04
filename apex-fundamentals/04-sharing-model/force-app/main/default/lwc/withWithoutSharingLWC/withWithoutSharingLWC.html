@@ -1,0 +1,23 @@
+<template>
+    <!--Отрисовываем две табы. -->
+    <lightning-tabset>
+
+    <lightning-tab label="With Sharing">
+       <lightning-datatable
+    key-field="Id"
+    data={sharedRecords.data}
+    columns={columns}>
+</lightning-datatable>
+    </lightning-tab>
+
+    <lightning-tab label="Without Sharing">
+       <lightning-datatable
+    key-field="Id"
+    data={unsharedRecords.data}
+    columns={columns}>
+</lightning-datatable>
+    </lightning-tab>
+
+</lightning-tabset>
+    
+</template>

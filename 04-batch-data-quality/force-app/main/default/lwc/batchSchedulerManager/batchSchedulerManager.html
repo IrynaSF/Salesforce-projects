@@ -1,0 +1,47 @@
+<template>
+    <lightning-card title="Batch Scheduler Manager"
+                    icon-name="standard:apex_plugin">
+        <div class="slds-p-around_medium">
+
+            <!-- 1. Выбор Batch класса -->
+            <lightning-combobox
+                label="Select Batch"
+                value={selectedBatch}
+                placeholder="-- Select a Batch --"
+                options={batchOptions}
+                onchange={handleBatchChange}>
+            </lightning-combobox>
+
+            <!-- 2. Выбор времени запуска -->
+            <lightning-combobox
+                label="Select Launch Time"
+                value={selectedTime}
+                placeholder="-- Select a time --"
+                options={timeOptions}
+                onchange={handleTimeChange}>
+            </lightning-combobox>
+
+            <!-- 3. Кнопки -->
+            <div class="slds-m-top_medium">
+                <lightning-button
+                    label="Launch"
+                    variant="brand"
+                    onclick={handleLaunch}
+                    class="slds-m-right_small">
+                </lightning-button>
+
+                <lightning-button
+                    label="Stop"
+                    variant="destructive"
+                    onclick={handleStop}>
+                </lightning-button>
+            </div>
+
+            <!-- 4. Статус -->
+            <div class="slds-m-top_medium">
+                <p><strong>Status:</strong> {jobStatus}</p>
+            </div>
+
+        </div>
+    </lightning-card>
+</template>

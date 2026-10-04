@@ -1,0 +1,31 @@
+<template>
+    <lightning-card title="Настройки приложения" icon-name="standard:settings">
+        <div class="slds-p-around_medium">
+            
+            <!-- Проверяем, что данные успешно загружены -->
+            <template lwc:if={settings.data}>
+                <div class="slds-grid slds-grid_vertical">
+                    
+                    <!-- Поле: Максимальное количество записей -->
+                    <div class="slds-col slds-m-bottom_small">
+                        <span class="slds-text-title_caps">Max Records:</span>
+                        <p class="slds-text-heading_small">
+                            {settings.data.Max_Records__c}
+                        </p>
+                    </div>
+                    <!-- Поле: Email For notifications -->
+                    <div class="slds-col">
+                        <span class="slds-text-title_caps">Notification Email:</span>
+                        <p class="slds-text-heading_small">
+                            {settings.data.Notification_Email__c}
+                        </p>
+                    </div>
+                </div>
+            </template>
+            <!-- Отображение ошибки, если она возникла -->
+            <template lwc:if={settings.error}>
+                <p class="slds-text-color_error">Error retrieving settings.</p>
+            </template>
+        </div>
+    </lightning-card>
+</template>

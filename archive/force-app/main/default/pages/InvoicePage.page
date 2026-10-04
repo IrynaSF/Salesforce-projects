@@ -1,0 +1,372 @@
+<apex:page standardController="Opportunity" 
+           extensions="InvoiceController" 
+           renderAs="pdf"
+           applyBodyTag="false"
+           applyHtmlTag="false"
+           showHeader="false">
+
+<html>
+<head>
+    <style type="text/css">
+        /* Настройки страницы A4 */
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* ===== ШАПКА (повторяется на каждой странице) ===== */
+        .header {
+            display: table-header-group;
+        }
+        
+        .header-content {
+            padding: 0 30px;
+            background-color: #f5f5f5;
+        }
+        
+        /* Оранжевая полоса сверху */
+        .orange-bar {
+            background-color: #E8531D;
+            height: 8px;
+            width: 100%;
+            display: block;
+        }
+        
+        /* Блок с лого и названием компании */
+        .company-block {
+            display: table;
+            width: 100%;
+            padding: 20px 0;
+        }
+        
+        .company-left {
+            display: table-cell;
+            vertical-align: middle;
+            width: 70%;
+        }
+        
+        .company-right {
+            display: table-cell;
+            vertical-align: top;
+            text-align: right;
+            width: 30%;
+        }
+        
+        .logo-circle {
+            display: inline-block;
+            width: 55px;
+            height: 55px;
+            background-color: #555;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 55px;
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+            vertical-align: middle;
+            margin-right: 15px;
+        }
+        
+        .company-info {
+            display: inline-block;
+            vertical-align: middle;
+        }
+        
+        .company-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .company-address {
+            font-size: 11px;
+            color: #666;
+            margin-top: 3px;
+        }
+        
+        .invoice-title {
+            font-size: 28px;
+            color: #aaa;
+            letter-spacing: 3px;
+            font-weight: normal;
+            margin-bottom: 15px;
+        }
+        
+        .invoice-meta {
+            font-size: 11px;
+            color: #555;
+        }
+        
+        .invoice-meta-label {
+            font-weight: bold;
+            color: #3a5ba0;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 3px;
+            margin-bottom: 3px;
+            min-width: 120px;
+            display: block;
+        }
+        
+        .invoice-meta-value {
+            display: block;
+            margin-bottom: 12px;
+            padding-bottom: 3px;
+        }
+        
+        /* ===== ТЕЛО ДОКУМЕНТА ===== */
+        .body-content {
+            padding: 20px 30px;
+        }
+        
+        /* Секция Bill To */
+        .bill-to-label {
+            color: #E8531D;
+            font-weight: bold;
+            font-size: 12px;
+            letter-spacing: 1px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .bill-to-info {
+            font-size: 12px;
+            line-height: 1.8;
+            margin-bottom: 25px;
+        }
+        
+        /* ===== ТАБЛИЦА ТОВАРОВ ===== */
+        .products-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+        
+        .products-table thead tr {
+            background-color: #E8531D;
+            color: white;
+        }
+        
+        .products-table thead th {
+            padding: 8px 10px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+        
+        .products-table thead th.right {
+            text-align: right;
+        }
+        
+        .products-table tbody tr:nth-child(even) {
+            background-color: #f5f5f5;
+        }
+        
+        .products-table tbody tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+        
+        .products-table tbody td {
+            padding: 7px 10px;
+            font-size: 11px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .products-table tbody td.right {
+            text-align: right;
+        }
+        
+        /* Итоговая сумма */
+        .balance-row {
+            text-align: right;
+            margin-top: 5px;
+        }
+        
+        .balance-label {
+            font-size: 12px;
+            color: #333;
+            margin-right: 10px;
+        }
+        
+        .balance-amount {
+            background-color: #E8531D;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            padding: 6px 15px;
+            display: inline-block;
+        }
+        
+        /* ===== ФУТЕР (повторяется на каждой странице) ===== */
+        .footer {
+            display: table-footer-group;
+        }
+        
+        .footer-content {
+            text-align: center;
+            padding: 15px 30px;
+            font-size: 11px;
+            color: #666;
+            border-top: 1px solid #ddd;
+        }
+        
+        /* Для корректного повторения шапки/футера в PDF */
+        table.page-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Используем таблицу для повторения шапки и футера -->
+<table class="page-table">
+
+    <!-- ШАПКА — повторяется на каждой странице -->
+    <thead>
+        <tr>
+            <td>
+                <!-- Оранжевая полоса -->
+                <div class="orange-bar"></div>
+                
+                <!-- Блок компании и INVOICE -->
+                <div class="header-content">
+                    <div class="company-block">
+                        
+                        <!-- Левая часть: лого + данные компании -->
+                        <div class="company-left">
+                            <div class="logo-circle">LOGO</div>
+                            <div class="company-info">
+                                <div class="company-name">
+                                    <apex:outputText value="{!myCompany.Name}"/>
+                                </div>
+                                <div class="company-address">
+                                    <apex:outputText value="{!myCompany.Street}"/>,
+                                    <apex:outputText value="{!myCompany.City}"/>,
+                                    <apex:outputText value="{!myCompany.State}"/>
+                                    <apex:outputText value="{!myCompany.PostalCode}"/>
+                                </div>
+                                <div class="company-address">
+                                    <apex:outputText value="{!opp.Owner.Name}"/>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Правая часть: INVOICE + дата + номер -->
+                        <div class="company-right">
+                            <div class="invoice-title">INVOICE</div>
+                            <div class="invoice-meta">
+                                <span class="invoice-meta-label">DATE</span>
+                                <span class="invoice-meta-value">
+                                    <apex:outputText value="{0,date,MM/dd/yyyy}">
+                                        <apex:param value="{!opp.CloseDate}"/>
+                                    </apex:outputText>
+                                </span>
+                                <span class="invoice-meta-label">INVOICE NO.</span>
+                                <span class="invoice-meta-value">
+                                    <apex:outputText value="{!opp.Invoice_Number__c}"/>
+                                </span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </thead>
+
+    <!-- ФУТЕР — повторяется на каждой странице -->
+    <tfoot>
+        <tr>
+            <td>
+                <div class="footer-content">
+                    <apex:outputText value="{!myCompany.Name}"/>
+                </div>
+            </td>
+        </tr>
+    </tfoot>
+
+    <!-- ТЕЛО ДОКУМЕНТА -->
+    <tbody>
+        <tr>
+            <td>
+                <div class="body-content">
+                    
+                    <!-- Секция Bill To -->
+                    <div class="bill-to-label">BILL TO</div>
+                    <div class="bill-to-info">
+                        <apex:outputPanel rendered="{!primaryContact != null}">
+                            <div><apex:outputText value="{!primaryContact.Name}"/></div>
+                            <div><apex:outputText value="{!primaryContact.Account.Name}"/></div>
+                            <div><apex:outputText value="{!primaryContact.Phone}"/></div>
+                            <div><apex:outputText value="{!primaryContact.Email}"/></div>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!primaryContact == null}">
+                            <div style="color:#999;">No primary contact assigned</div>
+                        </apex:outputPanel>
+                    </div>
+
+                    <!-- Таблица товаров -->
+                    <table class="products-table">
+                        <thead>
+                            <tr>
+                                <th style="width:50%;">PRODUCT NAME</th>
+                                <th class="right" style="width:15%;">QTY</th>
+                                <th class="right" style="width:17%;">UNIT PRICE</th>
+                                <th class="right" style="width:18%;">TOTAL</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <apex:repeat value="{!products}" var="item">
+                                <tr>
+                                    <td>
+                                        <apex:outputText value="{!item.PricebookEntry.Product2.Name}"/>
+                                    </td>
+                                    <td class="right">
+                                        <apex:outputText value="{0,number,#,##0}">
+                                            <apex:param value="{!item.Quantity}"/>
+                                        </apex:outputText>
+                                    </td>
+                                    <td class="right">
+                                        <apex:outputText value="{0,number,#,##0.00}">
+                                            <apex:param value="{!item.UnitPrice}"/>
+                                        </apex:outputText>
+                                    </td>
+                                    <td class="right">
+                                        <apex:outputText value="{0,number,#,##0.00}">
+                                            <apex:param value="{!item.TotalPrice}"/>
+                                        </apex:outputText>
+                                    </td>
+                                </tr>
+                            </apex:repeat>
+                        </tbody>
+                    </table>
+
+                    <!-- Balance Due -->
+                    <div class="balance-row">
+                        <span class="balance-label">Balance Due</span>
+                        <span class="balance-amount">
+                            $&#160;<apex:outputText value="{0,number,#,##0.00}">
+                                <apex:param value="{!totalAmount}"/>
+                            </apex:outputText>
+                        </span>
+                    </div>
+
+                </div>
+            </td>
+        </tr>
+    </tbody>
+
+</table>
+</body>
+</html>
+</apex:page>

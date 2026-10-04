@@ -1,0 +1,7 @@
+<!-- "страница-запускалка кнопки">
+ <!-- Эта страница пустая, она просто запускает метод и возвращает назад -->
+ 
+<apex:page standardController="Opportunity" 
+           extensions="InvController" 
+           action="{!generateAndSave}">
+</apex:page>

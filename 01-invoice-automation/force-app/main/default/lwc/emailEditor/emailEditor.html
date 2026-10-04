@@ -1,0 +1,25 @@
+<template>
+    <div class="slds-p-around_medium">
+        <lightning-input
+            label="To"
+            name="toAddress"
+            value={toAddress}
+            onchange={handleChange}>
+        </lightning-input>
+
+        <lightning-input
+            label="Subject"
+            name="subject"
+            value={subject}
+            onchange={handleChange}>
+        </lightning-input>
+
+        <lightning-input-rich-text
+            label="Message"
+            name="body"
+            value={body}
+            onchange={handleChange}
+            class="slds-m-top_small">
+        </lightning-input-rich-text>
+    </div>
+</template>

@@ -1,0 +1,17 @@
+<template>    
+<lightning-card title="List of Accounts">
+        <div class="slds-p-around_medium">
+            <!-- 1. Итерируемся по массиву accounts -->
+            <template for:each={accounts} for:item="acc">
+                
+                <!-- 2. Рендерим дочерний компонент accountCard -->
+                <!-- Передаем данные аккаунта в атрибут account-data -->
+                <c-account-card-api
+                    key={acc.Id} 
+                    account={acc}>
+                </c-account-card-api>
+
+            </template>
+        </div>
+    </lightning-card>
+</template>

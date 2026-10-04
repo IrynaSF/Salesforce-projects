@@ -1,0 +1,11 @@
+# Salesforce CLI
+.sf/
+.sfdx/
+.localdevserver/
+deploy-options.json
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+node_modules/
+*.log

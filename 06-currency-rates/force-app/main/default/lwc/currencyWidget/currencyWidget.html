@@ -1,0 +1,42 @@
+<template>
+    <lightning-card title="Currency Rates">
+        <div class="slds-p-around_medium">
+            <lightning-combobox
+                name="currency"
+                label="Select the base currency"
+                value={selectedCurrency}
+                options={currencyOptions}
+                onchange={handleCurrencyChange}>
+            </lightning-combobox>
+        </div>
+
+    <div class="slds-p-around_medium">
+    <p>Last updated: {displayInfo.updateDateTime}</p>
+    <p>Status: {displayInfo.status}</p>
+</div>
+  
+
+   <div class="slds-p-around_medium">
+    <lightning-datatable
+        data={displayRates}
+        columns={columns}
+        key-field="code"
+        hide-checkbox-column>
+    </lightning-datatable>
+</div>
+
+
+<div class="slds-p-around_medium">
+    <lightning-input type="date" label="Select date" onchange={handleCalendarChange}></lightning-input>
+</div>
+
+<template if:true={selectedDate}>
+    <template if:false={displayRates.length}>
+        <div class="slds-p-around_medium">
+            <p>No logs available for the selected date.</p>
+        </div>
+    </template>
+</template>
+
+</lightning-card>
+</template>

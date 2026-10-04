@@ -1,0 +1,28 @@
+<template>
+    <lightning-card title="Search">
+        <div class="slds-p-around_medium">
+            <!-- Поле ввода с обработчиком изменений -->
+            <lightning-input 
+                type="search" 
+                label="Contact Search" 
+                placeholder="Enter name...."
+                onchange={handleSearch}>
+            </lightning-input>
+        <p class="slds-m-bottom_small">
+                Found contacts: <strong>{contactsCount}</strong>
+            </p>
+    <template for:each={filteredContacts} for:item="con">
+               
+                <div key={con.Id} class="slds-box slds-m-bottom_small">
+                    <p><strong>Name:</strong> {con.Name}</p>
+                    <p><strong>Email:</strong> {con.Email}</p>
+                    <p><strong>Phone:</strong> {con.Phone}</p>
+                </div>
+            </template>
+
+            <template lwc:if={isListEmpty}>
+                <p>No contacts found.</p>
+            </template>
+        </div>
+    </lightning-card>
+</template>

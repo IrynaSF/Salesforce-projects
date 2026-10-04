@@ -1,0 +1,77 @@
+<template>
+    <!-- lightning-card — карточка с заголовком -->
+    <!-- title — текст заголовка карточки -->
+    <lightning-card title="Student List">
+        <div class="slds-p-around_medium">
+
+            <!-- ══════════════════════════════ -->
+            <!-- КНОПКИ УПРАВЛЕНИЯ              -->
+            <!-- ══════════════════════════════ -->
+            <div class="slds-m-bottom_medium">
+
+                <!-- Кнопка добавить нового студента -->
+                <!-- onclick={handleAdd} — вызывает метод handleAdd() в JS -->
+                <lightning-button
+                    label="Add David"
+                    onclick={handleAdd}
+                    class="slds-m-right_small">
+                </lightning-button>
+
+                <!-- Кнопка обновить оценку Linda -->
+                <!-- onclick={handleUpdate} — вызывает handleUpdate() в JS -->
+                <lightning-button
+                    label="Update Linda"
+                    onclick={handleUpdate}
+                    class="slds-m-right_small">
+                </lightning-button>
+
+                <!-- Кнопка сортировать по оценке -->
+                <!-- onclick={handleSort} — вызывает handleSort() в JS -->
+                <lightning-button
+                    label="Sort by Grade"
+                    onclick={handleSort}>
+                </lightning-button>
+            </div>
+
+            <!-- ══════════════════════════════ -->
+            <!-- СПИСОК СТУДЕНТОВ               -->
+            <!-- ══════════════════════════════ -->
+
+            <!-- for:each={students} — перебирает каждый элемент массива students -->
+            <!-- for:item="student"  — каждый элемент называем student -->
+            <!-- Результат: HTML блок создаётся для КАЖДОГО студента -->
+            <template for:each={students} for:item="student">
+
+                <!-- key={student.id} — обязательно для for:each -->
+                <!-- LWC использует key чтобы отслеживать изменения -->
+                <div key={student.id} class="slds-box slds-m-bottom_small">
+
+                    <!-- {student.name} — показывает имя текущего студента -->
+                    <!-- Например: Linda, Bob, Clara -->
+                    <p><strong>Name:</strong> {student.name}</p>
+
+                    <!-- {student.grade} — показывает оценку -->
+                    <!-- Например: 85, 42, 91 -->
+                    <p><strong>Grade:</strong> {student.grade}</p>
+
+                    <!-- {student.active} — показывает true или false -->
+                    <p><strong>Active:</strong> {student.active}</p>
+
+                    <!-- Кнопка Delete для каждого студента -->
+                    <!-- variant="destructive" — красная кнопка -->
+                    <!-- data-id={student.id} — прячем id студента в кнопку -->
+                    <!-- Когда нажмём Delete — JS знает чей id удалять -->
+                    <!-- onclick={handleDelete} — вызывает handleDelete() в JS -->
+                    <lightning-button
+                        label="Delete"
+                        variant="destructive"
+                        data-id={student.id}
+                        onclick={handleDelete}>
+                    </lightning-button>
+
+                </div>
+            </template>
+
+        </div>
+    </lightning-card>
+</template>

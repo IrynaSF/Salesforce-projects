@@ -1,0 +1,22 @@
+<template>
+      <lightning-button 
+      variant="destructive-text" 
+      label="Get User Data" 
+      title="Testing the website"
+       onclick={handleClick} class="slds-m-left_x-small">
+    </lightning-button>
+
+    <p>{status}</p>
+
+     <template lwc:if={hasData}>
+            <div class="user-profile">
+            <p>Name: {userData.name}</p>
+            <p>Email: {userData.email}</p>
+        </div>
+    </template>
+
+    <!-- Опционально: блок, если данных нет -->
+    <template lwc:else>
+        <p>Press the button to test</p>
+    </template>
+</template>

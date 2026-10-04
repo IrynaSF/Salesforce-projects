@@ -1,0 +1,111 @@
+<template>
+    <lightning-card title="Send Invoice">
+        
+        <!-- Loading -->
+        <template if:true={isLoading}>
+            <div class="slds-p-around_large slds-text-align_center">
+                <lightning-spinner 
+                    alternative-text="Loading..." 
+                    size="medium">
+                </lightning-spinner>
+                <p class="slds-m-top_small">Loading invoice data...</p>
+            </div>
+        </template>
+        
+        <!-- Error -->
+        <template if:true={hasError}>
+            <div class="slds-p-around_medium">
+                <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+                    <span class="slds-assistive-text">Error</span>
+                    <h2>{errorMessage}</h2>
+                </div>
+            </div>
+        </template>
+        
+        <!-- Main Content -->
+        <template if:false={isLoading}>
+            <template if:false={hasError}>
+                <div class="slds-p-around_medium">
+                    
+                    <!-- Subject (Read Only) -->
+                    <div class="slds-form-element slds-m-bottom_small">
+                        <label class="slds-form-element__label">
+                            <abbr class="slds-required" title="required">*</abbr>
+                            Subject
+                        </label>
+                        <div class="slds-form-element__control">
+                            <lightning-input
+                                value={emailSubject}
+                                read-only>
+                            </lightning-input>
+                        </div>
+                    </div>
+                    
+                    <!-- Recipient Name (Read Only) -->
+                    <div class="slds-form-element slds-m-bottom_small">
+                        <lightning-input
+                            label="Recipient Name"
+                            value={recipientName}
+                            read-only>
+                        </lightning-input>
+                    </div>
+                    
+                    <!-- Recipient Email (Read Only) -->
+                    <div class="slds-form-element slds-m-bottom_small">
+                        <lightning-input
+                            label="Recipient Email"
+                            value={recipientEmail}
+                            type="email"
+                            read-only>
+                        </lightning-input>
+                    </div>
+                    
+                    <!-- Email Body (Editable) -->
+                    <div class="slds-form-element slds-m-bottom_medium">
+                        <lightning-textarea
+                            label="Email Body"
+                            value={emailBody}
+                            onchange={handleEmailBodyChange}
+                            rows="8">
+                        </lightning-textarea>
+                    </div>
+                    
+                    <!-- Preview Button -->
+                    <div class="slds-m-bottom_medium">
+                        <lightning-button
+                            label="Preview Invoice PDF"
+                            onclick={handlePreview}
+                            variant="neutral"
+                            icon-name="utility:preview"
+                            icon-position="left">
+                        </lightning-button>
+                    </div>
+                    
+                    <!-- Divider -->
+                    <hr/>
+                    
+                    <!-- Action Buttons -->
+                    <div class="slds-m-top_medium slds-clearfix">
+                        <div class="slds-float_right">
+                            <lightning-button
+                                label="Cancel"
+                                onclick={handleCancel}
+                                class="slds-m-right_small">
+                            </lightning-button>
+                            <lightning-button
+                                label="Send"
+                                variant="brand"
+                                onclick={handleSend}
+                                disabled={isSending}
+                                icon-name="utility:send"
+                                icon-position="left">
+                            </lightning-button>
+                        </div>
+                    </div>
+                    
+                </div>
+            </template>
+        </template>
+        
+    </lightning-card>
+</template>

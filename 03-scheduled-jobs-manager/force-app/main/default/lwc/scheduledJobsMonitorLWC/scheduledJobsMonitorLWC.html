@@ -1,0 +1,26 @@
+<template>
+    <lightning-card title="Active Scheduled Jobs"
+                    icon-name="standard:process">
+        <div class="slds-p-around_medium">
+
+            <!-- 1. Количество jobs -->
+            <p>Total active jobs: {totalJobs}</p>
+
+            <!-- 2. Список jobs -->
+           <template for:each={formattedJobs} for:item="job">
+    <div key={job.Id} class="slds-box slds-m-bottom_small">
+        <p>Name: {job.jobName}</p>
+        <p>Next Launch: {job.NextFireTime}</p>
+        <p>Times: {job.TimesTriggered}</p>
+        <p>Cron: {job.CronExpression}</p>
+    </div>
+</template>
+
+            <!-- 3. Если нет jobs -->
+            <template if:true={isEmpty}>
+                <p>No active scheduled jobs</p>
+            </template>
+
+        </div>
+    </lightning-card>
+</template>

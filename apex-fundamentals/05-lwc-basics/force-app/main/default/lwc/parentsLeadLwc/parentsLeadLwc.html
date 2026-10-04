@@ -1,0 +1,42 @@
+<template>
+  <!--Поле ввода https://developer.salesforce.com/docs/platform/lightning-component-reference/guide/lightning-record-picker.html?type=Develop-->
+<lightning-record-picker
+    label="Enter Parent Name"
+    placeholder="Search parents..."
+    object-api-name="ParentsLead__c"
+    onchange={handleParentChange}>
+</lightning-record-picker>
+
+
+    <!--Текстовый статус — показывает количество найденных детей или сообщение об ошибке.-->
+    <p>{status}</p>
+
+   <template lwc:if={children.length}>
+    <div style="height: 300px;">
+
+      <p>{displayRange}</p>
+        
+      <lightning-datatable
+                key-field="Id"
+                data={children}
+                columns={columns}>
+        </lightning-datatable>
+
+        <div class="slds-align_absolute-center">
+          <div class="slds-align_absolute-center">
+    <template for:each={pageNumbers} for:item="pg">
+        <span 
+            key={pg.number} 
+            data-page={pg.number} 
+            class={pg.cssClass} 
+            onclick={handlePageClick}
+            style="cursor: pointer; margin: 0 8px;">
+            {pg.number}
+        </span>
+    </template>
+</div>
+   
+</div>
+  </div>
+</template>
+</template>

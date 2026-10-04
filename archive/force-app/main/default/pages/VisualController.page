@@ -1,0 +1,179 @@
+<apex:page standardController="Opportunity" extensions="InvController"
+           renderAs="pdf"
+           showHeader="false"
+           sidebar="false"
+           standardStylesheets="false"
+           applyHtmlTag="false"
+           applyBodyTag="false">
+<html>
+    <head>
+         <style type="text/css">
+            @page {
+                size: A4;
+                margin-top: 5cm;
+                margin-bottom: 2cm;
+                @top-center { content: element(header); }
+                @bottom-center { content: element(footer); }
+            }
+           
+            /* --- ОСНОВНЫЕ СТИЛИ --- */
+            body { font-family: sans-serif; }
+            .header { position: running(header); }
+            .footer { position: running(footer); }
+            
+            .bottom-border {
+                border-bottom: 1px solid #C0C0C0;
+                margin-bottom: 10px;
+                width: 150px;
+                float: right;
+                text-align: left;
+            }
+
+            .label-text {
+                font-size: 10px;
+                font-weight: bold;
+                color: #003366;
+                display: block;
+                text-transform: uppercase;
+            }
+
+            /* --- СТИЛИ ДЛЯ ТАБЛИЦЫ ТОВАРОВ --- */
+            .invoice-table { 
+                width: 100%; 
+                border-collapse: collapse; 
+                margin-top: 20px; 
+            }
+            .invoice-table th { 
+                background-color: #FF5A19; /* Оранжевый фон заголовка */
+                color: white; 
+                padding: 10px; 
+                text-align: left; 
+                text-transform: uppercase;
+            }
+            .invoice-table td { 
+                padding: 10px; 
+                border-bottom: 1px solid #EEE; 
+            }
+
+            /* --- СТИЛИ ДЛЯ БЛОКА ИТОГО --- */
+            .balance-due-label { 
+                color: #2C3E50;
+                font-weight: bold; 
+                padding: 10px; 
+                text-align: right; 
+            }
+            .balance-due-box { 
+                background-color: #F8D7DA; /* Розовый фон */
+                color: #000000;
+                font-weight: bold; 
+                font-size: 16px;
+                padding: 10px 15px; 
+                text-align: right; 
+                width: 120px;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Блок 1: Шапка (Header) -->
+        <div class="header">
+            <!-- 1. Оранжевая полоса сверху -->
+            <div style="background-color: #FF8C00; height: 15px; width: 100%; margin-bottom: 20px;"></div>
+         
+            <!-- 2. Таблица-сетка для размещения элементов -->
+            <table width="100%" style="border-collapse: collapse;">
+                <tr>
+                    <!-- Левая колонка логотип -->
+                    <td width="15%" style="vertical-align: middle;">
+                        <apex:image url="{!URLFOR($Resource.Logo)}" width="80" />
+                    </td>
+
+                    <!-- Центральная колонка -->
+                    <td width="50%" style="vertical-align:middle; padding-left: 15px; font-size: 12px; color: #555;">
+                        <div style="font-weight:bold; font-size: 14px; color: #000;">{!myCompany.Name}</div>
+                        <div>{!myCompany.Street}, {!myCompany.City}</div>
+                        <div style="margin-top: 10px;">{!Opportunity.Owner.Name}</div>
+                    </td>
+
+                    <!-- Правая колонка: Заголовок и данные инвойса -->
+                    <td width="35%" style="text-align:right; vertical-align:bottom;">
+                        <div style="font-size: 28px; color: #A0A0A0; margin-bottom: 20px;">INVOICE</div>
+                        
+                        <!-- Блок даты -->
+                        <div class="bottom-border">
+                           <span class="label-text">DATE</span>
+                            <div style="font-size: 12px; color:#000;">
+                                <apex:outputText value="{0,date,dd/MM/yyyy}">
+                                    <apex:param value="{!TODAY()}" />
+                                </apex:outputText>
+                            </div>
+                        </div>
+                        <div style="clear: both; height: 5px;"></div>
+                                         
+                      <!-- Блок номера инвойса -->
+<div class="bottom-border">
+    <span class="label-text">INVOICE NO.</span>
+    <div style="font-size: 12px; color: #000;">
+        <!-- Пробуем вывести значение как текст. Если пусто - выводим 'N/A' -->
+        <apex:outputText value="{!IF(ISBLANK(Opportunity.Invoice_Number__c), 'N/A', Opportunity.Invoice_Number__c)}" />
+    </div>
+</div>
+                    </td> <!-- ТУТ БЫЛА ОШИБКА: теперь тег закрыт -->
+                </tr> <!-- ТУТ БЫЛА ОШИБКА: теперь тег закрыт -->
+            </table>
+        </div>
+
+        <!-- Блок 2: BILL TO -->
+        <div style="margin-top: 20px;">
+            <apex:outputPanel rendered="{!NOT(ISNULL(primaryContact))}">
+                <strong style="color: #FF5A19;">Bill To</strong><br/>
+                {!primaryContact.Contact.Name}<br/>
+                {!primaryContact.Contact.Account.Name}<br/>
+                <apex:outputText value="Phone: {!primaryContact.Contact.Phone}" rendered="{!NOT(ISBLANK(primaryContact.Contact.Phone))}" /> <br/>
+                <apex:outputText value="Email: {!primaryContact.Contact.Email}" rendered="{!NOT(ISBLANK(primaryContact.Contact.Email))}" />
+            </apex:outputPanel>
+        </div>
+                      
+        <!-- Блок 3: Таблица товаров -->
+        <table class="invoice-table">
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                 <apex:repeat value="{!products}" var="item">
+                    <tr>
+                        <td>{!item.Product2.Name}</td>
+                        <td>{!item.Quantity}</td>
+                        <td>{!item.UnitPrice}</td>
+                        <td>{!item.TotalPrice}</td>
+                    </tr>
+                </apex:repeat>
+            </tbody>
+        </table>
+
+        <!-- Блок 4: Итоги (Balance Due) -->
+        <div style="margin-top: 20px;">
+            <table align="right" style="border-collapse: collapse;">
+                <tr>
+                    <td class="balance-due-label">Balance Due:</td>
+                    <td class="balance-due-box">
+                        <apex:outputField value="{!Opportunity.Amount}" />
+                    </td>
+                </tr>
+            </table>
+            <div style="clear: both;"></div>
+        </div>
+
+        <!-- Блок 5: Подвал (Footer) -->
+        <div class="footer" style="margin-top: 50px; border-top: 1px solid #000; padding-top: 5px;">
+            <p style="text-align: center; font-size: 10px; color: #777;">
+                {!$Organization.Name}
+            </p>
+        </div>
+    </body>
+</html>
+</apex:page>

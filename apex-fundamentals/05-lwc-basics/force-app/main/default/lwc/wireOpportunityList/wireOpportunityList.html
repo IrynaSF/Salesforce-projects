@@ -1,0 +1,26 @@
+<template>
+    <!-- карточка 1: combobox для выбора аккаунта -->
+    <lightning-card title="Select Account">
+        <div class="slds-p-around_medium">
+            <lightning-combobox
+                label="Account"
+                value={selectedAccountId}
+                options={accountOptions}
+                onchange={handleAccountSelect}>
+            </lightning-combobox>
+        </div>
+    </lightning-card>
+
+    <!-- карточка 2: таблица Opportunity -->
+    <lightning-card title="Opportunities">
+        <div class="slds-p-around_medium">
+            <template lwc:if={opportunities.data}>
+                <lightning-datatable
+                    key-field="Id"
+                    data={opportunities.data}
+                    columns={opportunityColumns}>
+                </lightning-datatable>
+            </template>
+        </div>
+    </lightning-card>
+</template>

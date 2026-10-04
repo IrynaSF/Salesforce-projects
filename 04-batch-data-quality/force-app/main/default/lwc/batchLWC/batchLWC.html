@@ -1,0 +1,28 @@
+<template>
+    <lightning-card title={cardTitle} icon-name="standard:process">
+        <div class="slds-p-around_medium">
+
+            <!-- Кнопки -->
+            <div class="slds-m-top_small">
+                <lightning-button
+                    label="Launch"
+                    variant="brand"
+                    onclick={handleLaunch}
+                    class="slds-m-right_small">
+                </lightning-button>
+
+                <lightning-button
+                    label="Stop"
+                    variant="destructive"
+                    onclick={handleStop}>
+                </lightning-button>
+            </div>
+
+            <!-- Статус -->
+            <div class="slds-m-top_medium">
+                <p><strong>Status:</strong> {jobStatus}</p>
+            </div>
+
+        </div>
+    </lightning-card>
+</template>

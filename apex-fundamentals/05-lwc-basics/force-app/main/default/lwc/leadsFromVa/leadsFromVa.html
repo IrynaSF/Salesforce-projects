@@ -1,0 +1,25 @@
+<template>
+
+   <lightning-button 
+   variant="success" 
+   label="Leads From Virginia" 
+   title="Successful action" 
+   onclick={handleLoad} 
+   class="slds-m-left_x-small">
+</lightning-button>
+
+<!--текстовый индикатор состояния — показывает пользователю что происходит в данный момент.-->
+<p>{status}</p>
+
+<!--Сдесь мы берем данные с JS которые потом будут отображаться на странице,НTML автоматически берёт их оттуда через {leads} и отображает на странице через цикл for:each. -->>
+<template lwc:if={hasLeads}>
+                <template for:each={leads} for:item="lead">
+                    <div key={lead.Id} class="slds-box slds-var-m-around_small">
+                        <p><strong>Name:</strong> {lead.fullName}</p>
+                        <p><strong>Status:</strong> {lead.Status}</p>
+
+                        </div>
+    
+</template>
+</template>
+</template>

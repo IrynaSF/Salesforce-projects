@@ -1,0 +1,78 @@
+<template>
+
+
+<template lwc:if={isTabMode}>
+    <div class="slds-p-around_medium slds-background-color_neutral-lightest slds-border_bottom">
+        <lightning-input
+            type="search"
+            variant="label-hidden"
+            placeholder="Search by Client Name..."
+            onchange={handleSearch}
+            class="slds-m-bottom_small"
+        >
+        </lightning-input>
+    </div>
+</template>
+<!-- 2. lightning-accordion с аккаунтами -->
+ <lightning-accordion>
+
+
+ <template for:each={pagedAccounts} for:item="acc">
+
+
+<lightning-accordion-section key={acc.accountId} label={acc.accountName}>
+ <lightning-datatable
+        data={acc.opportunities}
+        columns={opportunityColumns}
+        key-field="Id"
+        onrowaction={handleShowProducts}
+    >
+    </lightning-datatable>
+</lightning-accordion-section>
+
+
+ </template>
+
+
+</lightning-accordion>
+<template lwc:if={isTabMode}>
+    <lightning-button label="Prev" onclick={handlePrevPage}></lightning-button>
+    <lightning-button label="Next" onclick={handleNextPage}></lightning-button>
+</template>
+<template lwc:if={isModalOpen}>
+    <!-- Подложка (затемнение фона) -->
+    <div class="slds-backdrop slds-backdrop_open"></div>
+
+
+    <!-- Модальное окно -->
+    <section role="dialog" class="slds-modal slds-fade-in-open">
+        <div class="slds-modal__container">
+           
+            <header class="slds-modal__header">
+                <h2 class="slds-text-heading_medium">Opportunity Products</h2>
+            </header>
+
+
+            <div class="slds-modal__content slds-p-around_medium">
+                <!-- Таблица товаров -->
+                <lightning-datatable
+  data={products}
+    columns={productColumns}
+    key-field="Id"
+>
+</lightning-datatable>
+            </div>
+
+
+            <footer class="slds-modal__footer">
+                <lightning-button
+                    label="Close"
+                    variant="neutral"
+                    onclick={handleCloseModal}>
+                </lightning-button>
+            </footer>
+
+
+        </div>
+    </section>
+</template>

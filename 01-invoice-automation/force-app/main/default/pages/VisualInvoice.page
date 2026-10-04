@@ -1,0 +1,132 @@
+<apex:page standardController="Opportunity" 
+           extensions="VisualController"
+           renderAs="pdf"
+           applyBodyTag="false"
+           showHeader="false">
+<html>
+<head>
+<style>
+    @page {
+        size: A4;
+        margin: 0;
+        @top-center { content: element(header); }
+        @bottom-center { content: element(footer); }
+    }
+    body { font-family: Arial, sans-serif; font-size: 12px; margin: 0; padding: 0; }
+    * { 
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+}
+    #header {
+        position: running(header);
+        background: #f5f5f5;
+        padding: 20px 40px;
+        border-bottom: 4px solid #e05c00;
+    }
+    #footer {
+        position: running(footer);
+        text-align: center;
+        font-size: 10px;
+        color: #666;
+        padding: 10px;
+        border-top: 1px solid #ddd;
+    }
+    .header-inner { display: flex; justify-content: space-between; align-items: flex-start; }
+    .company-info { font-size: 12px; }
+    .company-name { font-weight: bold; font-size: 14px; }
+    .invoice-title { text-align: right; }
+    .invoice-title h1 { font-size: 28px; color: #ccc; letter-spacing: 4px; margin: 0; }
+    .invoice-meta { margin-top: 8px; }
+    .invoice-meta table { border-collapse: collapse; }
+    .invoice-meta td { padding: 4px 8px; border-bottom: 1px solid #ccc; font-size: 11px; }
+    .invoice-meta .label { color: #00368c; font-weight: bold; text-align: right; }
+    
+    .content { padding: 40px; }
+    .bill-to { margin-bottom: 30px; }
+   table.items thead tr { background-color: #e05c00 !important; color: white !important; }
+    table.items { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    table.items thead tr { background: #e05c00; color: white; }
+    table.items thead td { padding: 8px 12px; font-size: 11px; font-weight: bold; text-align: center; }
+    table.items tbody tr:nth-child(even) { background: #f9f9f9; }
+    table.items tbody td { padding: 8px 12px; border-bottom: 1px solid #eee; }
+    table.items tbody td.name { width: 50%; }
+    table.items tbody td.number { text-align: center; }
+    table.items tbody td.money { text-align: right; }
+    
+    .totals { text-align: right; margin-top: 10px; }
+    .totals .balance { display: inline-block; background: #e05c00; color: white; padding: 8px 20px; font-size: 14px; font-weight: bold; }
+</style>
+</head>
+<body>
+
+<div id="header">
+    <div class="header-inner">
+        <div class="company-info">
+            <div class="company-name">{!companyInfo.Name}</div>
+            <div>{!companyInfo.Street}</div>
+            <div>{!companyInfo.City}, {!companyInfo.State} {!companyInfo.PostalCode}</div>
+            <div>{!opp.Owner.Name}</div>
+        </div>
+        <div class="invoice-title">
+            <h1>INVOICE</h1>
+            <div class="invoice-meta">
+                <table>
+                    <tr><td class="label">DATE</td><td><apex:outputText value="{0,date,MM/dd/yyyy}"><apex:param value="{!generationDate}"/></apex:outputText></td></tr>
+                    <tr><td class="label">INVOICE NO.</td><td>{!opp.Invoice_Number__c}</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="footer">
+    <p>{!companyInfo.Name}</p>
+</div>
+
+<div class="content">
+    <div class="bill-to">
+        <div class="label">BILL TO</div>
+        <apex:outputPanel rendered="{!NOT(ISNULL(primaryContact))}">
+            <div>{!primaryContact.Contact.Name}</div>
+            <div>{!primaryContact.Contact.Account.Name}</div>
+            <div>{!primaryContact.Contact.Phone}</div>
+            <div>{!primaryContact.Contact.Email}</div>
+        </apex:outputPanel>
+    </div>
+
+    <table class="items">
+        <thead>
+            <tr>
+                <td class="name">PRODUCT NAME</td>
+                <td class="number">QTY</td>
+                <td class="money">UNIT PRICE</td>
+                <td class="money">TOTAL</td>
+            </tr>
+        </thead>
+        <tbody>
+            <apex:repeat value="{!lineItems}" var="item">
+            <tr>
+                <td class="name">{!item.PricebookEntry.Product2.Name}</td>
+                <td class="number">{!item.Quantity}</td>
+                <td class="money">
+                    <apex:outputText value="{0,number,#,##0.00}"><apex:param value="{!item.UnitPrice}"/></apex:outputText>
+                </td>
+                <td class="money">
+                    <apex:outputText value="{0,number,#,##0.00}"><apex:param value="{!item.TotalPrice}"/></apex:outputText>
+                </td>
+            </tr>
+            </apex:repeat>
+        </tbody>
+    </table>
+
+    <div class="totals">
+        Balance Due &nbsp;
+        <span class="balance">
+            $ <apex:outputText value="{0,number,#,##0.00}"><apex:param value="{!opp.Amount}"/></apex:outputText>
+        </span>
+    </div>
+</div>
+
+</body>
+</html>
+</apex:page>

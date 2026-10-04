@@ -1,0 +1,100 @@
+<apex:page standardController="Opportunity" extensions="InvoiceController" renderAs="pdf" applyBodyTag="false" applyHtmlTag="false" showHeader="false">
+    
+    <head>
+        <style type="text/css">
+            
+            @page {
+                size: A4;
+                margin: 20mm;
+                @bottom-center {
+                    content: element(footer);
+                }
+                @top-center {
+                    content: element(header);
+                }
+            }
+
+
+           
+            div.header {
+                padding: 10px;
+                position: running(header);
+            }
+            div.footer {
+                display: block;
+                padding: 5px;
+                position: running(footer);
+                font-size: 9pt;
+                text-align: center;
+            }
+
+
+            
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+            }
+            th {
+                background-color: #f2f2f2;
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+            }
+            td {
+                border: 1px solid #ddd;
+                padding: 8px;
+            }
+        </style>
+    </head>
+
+
+    <div class="header">
+        <strong>{!myCompany.Name}</strong><br/>
+        {!myCompany.Street}, {!myCompany.City}, {!myCompany.State} {!myCompany.PostalCode}
+    </div>
+
+
+    <div class="footer">
+        {!myCompany.Name} - Confidential Invoice
+    </div>
+
+
+    <div class="content">
+        <h1 style="text-align: center;">INVOICE</h1>
+        
+        <div style="margin-top: 20px;">
+            <h3>Bill To:</h3>
+            <p>
+                {!primaryContact.Contact.Name}<br/>
+                {!primaryContact.Contact.MailingStreet}<br/>
+                {!primaryContact.Contact.MailingCity}, {!primaryContact.Contact.MailingState}
+            </p>
+        </div>
+
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <apex:repeat value="{!products}" var="p">
+                    <tr>
+                        <td>{!p.Product2.Name}</td>
+                        <td>{!p.Quantity}</td>
+                        <td>{!p.UnitPrice}</td>
+                        <td>{!p.TotalPrice}</td>
+                    </tr>
+                </apex:repeat>
+            </tbody>
+        </table>
+        
+        <h3 style="text-align: right;">Total Amount: {!opp.Amount}</h3>
+    </div>
+
+</apex:page>

@@ -1,0 +1,41 @@
+<template>
+    <lightning-card title="Weather Widget" icon-name="utility:world">
+        <div class="slds-p-around_medium">
+
+            <template lwc:if={errorMessage}>
+                <p class="slds-text-color_error">{errorMessage}</p>
+            </template>
+
+            <template lwc:if={weatherData}>
+                <div class="slds-text-align_center">
+                    <p class="slds-text-heading_medium" style="font-weight: bold;">{weatherData.name}, {weatherData.sys.country}</p>
+                    
+                    <img src={weatherData.iconUrl} alt="weather icon" style="width: 4rem; height: 4rem;" />
+                    
+                    <p class="slds-text-heading_large">{weatherData.main.temp}°C</p>
+                    <p>{weatherDescription}</p>
+                </div>
+
+                <div class="slds-grid slds-gutters slds-m-top_medium">
+                    <div class="slds-col slds-size_1-of-2 slds-box slds-text-align_center">
+                        <!-- Карточка для ветра -->
+                <img src={weatherData.windIconUrl} alt="wind icon" style="width: 1.5rem; height: 1.5rem;" />
+               <p class="slds-text-title">Wind Speed</p>
+                 <p>{weatherData.wind.speed} m/s</p>
+                  
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-box slds-text-align_center">
+                        <!-- Карточка для влажности -->
+               <lightning-icon icon-name="utility:water" size="small"></lightning-icon>
+                        <p class="slds-text-title">Humidity</p>
+                        <p>{weatherData.main.humidity}%</p>
+                    </div>
+                </div>
+            </template>
+
+            <div class="slds-m-top_medium">
+                <lightning-input label="City" value={cityInput} onchange={handleCityChange}></lightning-input>
+            </div>
+        </div>
+    </lightning-card>
+</template>

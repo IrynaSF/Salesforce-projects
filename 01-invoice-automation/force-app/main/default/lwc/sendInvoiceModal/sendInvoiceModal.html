@@ -1,0 +1,55 @@
+<template>
+    <lightning-quick-action-panel header="Send Invoice">
+
+        <template if:true={dataFromApex}>
+            <div class="slds-p-around_medium">
+
+                <lightning-input
+                    label="To"
+                    value={toAddress}
+                    onchange={handleToChange}
+                    class="slds-m-bottom_small">
+                </lightning-input>
+
+                <lightning-input
+                    label="Subject"
+                    value={subject}
+                    onchange={handleSubjectChange}
+                    class="slds-m-bottom_small">
+                </lightning-input>
+
+                <lightning-input-rich-text
+                    value={body}
+                    onchange={handleBodyChange}
+                    class="slds-m-top_small">
+                </lightning-input-rich-text>
+
+            </div>
+        </template>
+
+        <template if:false={dataFromApex}>
+            <div class="slds-align_absolute-center" style="height:5rem;">
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <div slot="footer">
+            <lightning-button
+                label="Cancel"
+                onclick={handleCancel}
+                class="slds-m-right_x-small">
+            </lightning-button>
+            <lightning-button
+                label="Preview Invoice"
+                onclick={handlePreview}
+                class="slds-m-right_x-small">
+            </lightning-button>
+            <lightning-button
+                label="Send Email"
+                variant="brand"
+                onclick={handleSend}>
+            </lightning-button>
+        </div>
+
+    </lightning-quick-action-panel>
+</template>

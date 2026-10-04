@@ -1,0 +1,35 @@
+<template>
+    <lightning-card title="Generate Invoice">
+        <div class="slds-p-around_medium slds-text-align_center">
+            <template if:true={isLoading}>
+                <lightning-spinner 
+                    alternative-text="Generating invoice..." 
+                    size="medium">
+                </lightning-spinner>
+                <p class="slds-m-top_small">
+                    Generating invoice PDF, please wait...
+                </p>
+            </template>
+            
+            <template if:false={isLoading}>
+                <template if:true={isSuccess}>
+                    <lightning-icon 
+                        icon-name="action:approval" 
+                        size="large"
+                        class="slds-m-bottom_small">
+                    </lightning-icon>
+                    <p class="slds-text-color_success">{successMessage}</p>
+                </template>
+                
+                <template if:true={hasError}>
+                    <lightning-icon 
+                        icon-name="action:close" 
+                        size="large"
+                        class="slds-m-bottom_small">
+                    </lightning-icon>
+                    <p class="slds-text-color_error">{errorMessage}</p>
+                </template>
+            </template>
+        </div>
+    </lightning-card>
+</template>
