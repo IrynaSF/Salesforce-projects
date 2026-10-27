@@ -32,6 +32,7 @@ Contact (employee) ──< Checkout__c >── Equipment__c
 | Object | Key fields |
 |--------|-----------|
 | `Equipment__c` | `Name`, `Type__c` (Laptop / Monitor / Headset …), `Status__c` (Available / In Use / Maintenance) |
+| `Contact` | `Active_Checkouts__c`, `Overdue_Checkouts__c` (Roll-Up Summary, COUNT of Checkouts) |
 | `Checkout__c` (junction) | `Employee__c` (Master-Detail → Contact), `Equipment__c` (Master-Detail → Equipment__c), `Checkout_Date__c`, `Due_Date__c`, `Return_Date__c`, `Is_Overdue__c`, `Equipment_Name__c` |
 
 A checkout with an empty `Return_Date__c` is an **open** checkout, meaning the device is still with the employee.
@@ -96,44 +97,40 @@ The Apex trigger and the Flows work together. For example, when a user issues eq
 | LWC | `myEquipmentPanel` / `myCheckoutsList` | Parent–child pair: `@api` property down, custom event up |
 | Flow | 5 Flows | See the table above |
 
-## Use cases (screenshots)
+## Screenshots
 
-### 1. Issue equipment (Screen Flow)
-| Step | Screenshot |
-|------|-----------|
-| On a Contact, the user starts **Issue Equipment** and picks a type | ![](screenshots/uc1-1-pick-type.png) |
-| Data Table shows only *Available* equipment of that type | ![](screenshots/uc1-2-available-table.png) |
-| Confirmation screen: employee + equipment | ![](screenshots/uc1-3-confirm.png) |
-| Result: the equipment is issued, and the due date was set by the before-save Flow | ![](screenshots/uc1-4-result-due-date.png) |
-| **Edge case:** no available equipment of this type (screen validation) | ![](screenshots/uc1-5-none-available.png) |
+### Employee (Contact) page
+Roll-up summary fields **Active Checkouts** / **Overdue Checkouts**, a warning shown when the employee has overdue equipment, **Issue Equipment** / **Return Equipment** buttons that launch the Screen Flows, and the Tasks created by the automation.
 
-### 2. Return equipment (Screen Flow)
-| Step | Screenshot |
-|------|-----------|
-| Multi-select table of the employee's open checkouts | ![](screenshots/uc2-1-select-checkouts.png) |
-| Result: "Returned: N item(s)", status back to *Available* | ![](screenshots/uc2-2-returned.png) |
-| **Edge case:** the employee has nothing to return | ![](screenshots/uc2-3-nothing-to-return.png) |
+![Contact page](screenshots/contact-page.png)
 
-### 3. Automation in the background
-| Case | Screenshot |
-|------|-----------|
-| Due date by type: Laptop +14 days, Monitor +30 days, others +7 (before-save Flow) | ![](screenshots/uc3-due-date-on-record.png) |
-| Equipment set to *Maintenance* creates a "return the equipment" Task (after-save Flow) | ![](screenshots/uc4-maintenance-task.png) |
-| Overdue checkout gets *Is Overdue* checked and a reminder Task (Scheduled Flow) | ![](screenshots/uc5-overdue-flag-task.png) |
-| **Edge case:** double checkout blocked by the Apex trigger | ![](screenshots/uc6-double-checkout-error.png) |
-
-### 4. Lightning Web Components
-| Case | Screenshot |
-|------|-----------|
-| Equipment Catalog: search by type and Check Out | ![](screenshots/uc7-1-catalog.png) |
-| Select Employee modal, then a success toast | ![](screenshots/uc7-2-modal.png) |
-| My Equipment Panel: return from the child component, counter in the parent | ![](screenshots/uc7-3-my-equipment.png) |
-
-### 5. Under the hood
-| | |
+### Issue Equipment (Screen Flow)
+| Step 1: pick an equipment type | Flow Builder: lookup, Loop to count available items, Data Table |
 |---|---|
-| Flow Builder: Return Equipment (Loop + one Update outside the loop) | ![](screenshots/flow-builder-return.png) |
-| Schema Builder: data model | ![](screenshots/data-model.png) |
+| ![Issue flow: pick type](screenshots/issue-flow-pick-type.png) | ![Issue flow builder, part 1](screenshots/flow-builder-issue-1.png) |
+
+Flow Builder, part 2: confirmation, **Create Checkout** with a **Fault Path** to an error screen, and the result screen with the due date
+
+![Issue flow builder, part 2](screenshots/flow-builder-issue-2.png)
+
+### Return Equipment (Screen Flow)
+| Multi-select the open checkouts to return | Flow Builder: Decision, Loop + Assignment, **one** Update outside the loop, Fault Path |
+|---|---|
+| ![Return flow: select checkouts](screenshots/return-flow-select.png) | ![Return flow builder](screenshots/flow-builder-return.png) |
+
+### Background automation
+| Equipment set to *Maintenance* creates a "return the equipment" Task | Record-Triggered (after save) Flow behind it |
+|---|---|
+| ![Maintenance task](screenshots/maintenance-task.png) | ![Maintenance notify flow](screenshots/flow-builder-maintenance-notify.png) |
+
+Daily **Scheduled Flow**: open checkouts past their due date get a reminder Task and are flagged *Is Overdue*
+
+![Overdue check flow](screenshots/flow-builder-overdue-check.png)
+
+### Lightning Web Components
+| Equipment Catalog: search by type, Check Out per row | `LightningModal` to pick the employee |
+|---|---|
+| ![Equipment Catalog](screenshots/lwc-equipment-catalog.png) | ![Select Employee modal](screenshots/lwc-select-employee-modal.png) |
 
 ## What I learned
 

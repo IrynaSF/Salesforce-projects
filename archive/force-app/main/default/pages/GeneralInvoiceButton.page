@@ -1,7 +1,0 @@
-<!-- "button launcher page">
- <!-- This page is empty: it just runs the method and redirects back -->
- 
-<apex:page standardController="Opportunity" 
-           extensions="InvController" 
-           action="{!generateAndSave}">
-</apex:page>
