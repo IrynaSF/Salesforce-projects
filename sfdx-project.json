@@ -25,6 +25,10 @@
       "default": false
     },
     {
+      "path": "07-equipment-checkout/force-app",
+      "default": false
+    },
+    {
       "path": "flows/force-app",
       "default": false
     },

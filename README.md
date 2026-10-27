@@ -1,6 +1,6 @@
 # Salesforce Developer Portfolio
 
-Hands-on Salesforce projects built in a Developer Edition org between January and September 2026. Each project solves a realistic business scenario end to end: data model, Apex back end, Lightning Web Components UI, automation, and unit tests.
+Hands-on Salesforce projects built in a Developer Edition org between January and October 2026. Each project solves a realistic business scenario end to end: data model, Apex back end, Lightning Web Components UI, automation, and unit tests.
 
 **Stack:** Apex · SOQL/SOSL · Lightning Web Components · Visualforce · Flow Builder · Batch & Schedulable Apex · REST callouts · Named Credentials · Custom Metadata Types · Inbound Email Services · Apex unit testing with `HttpCalloutMock`
 
@@ -16,10 +16,11 @@ Hands-on Salesforce projects built in a Developer Edition org between January an
 | 04 | [Batch Data Quality Suite](04-batch-data-quality) | Six batch jobs that clean and flag CRM data (stale opportunities, missing lead sources, uncontacted leads…) and one generic scheduler that can run any of them from an LWC. | `Database.Batchable`, `Type.forName` for dynamic instantiation, reusable scheduler, batch testing |
 | 05 | [Weather Widget](05-weather-widget) | LWC that shows live weather for any city using the OpenWeatherMap REST API. | HTTP callouts, Named Credential, Custom Metadata for API settings, typed JSON wrapper, `HttpCalloutMock` |
 | 06 | [Currency Rates](06-currency-rates) | Daily import of exchange rates from ExchangeRate-API into Salesforce, rate history log, cross-rate calculator, and an LWC with base-currency picker and historical date lookup. | Callouts + DML logging, `@future(callout=true)`, Schedulable, untyped JSON parsing, `@wire` with reactive params |
+| 07 | [Equipment Checkout](07-equipment-checkout) | Lends equipment to employees: blocks double checkout, keeps equipment status in sync, sets due dates by type, flags overdue items and asks for returns before maintenance. Built twice on one data model, as LWC + Apex and as Flows. | Junction object (2× Master-Detail), bulkified trigger + handler, `LightningModal`, parent–child LWC events, Screen / before-save / after-save / Scheduled Flows, Fault Paths |
 
 Also included:
 
-- **[Flow Automation](flows)**: record-triggered Flows built in Flow Builder (lead rating, website auto-fill, task creation, product on lead conversion), included as Flow metadata.
+- **[Flow Automation](flows)**: record-triggered Flows built in Flow Builder (website auto-fill from email, task for a new contact, product on lead conversion), included as Flow metadata. More Flows (Screen, before/after-save, Scheduled) are in [07 · Equipment Checkout](07-equipment-checkout).
 - **[Apex Fundamentals](apex-fundamentals)**: smaller exercises on Apex syntax, SOQL/DML, triggers and handler pattern, sharing model, and core LWC concepts (`@api`, `@track`, `@wire`, promises, pagination).
 - **[Archive](archive)**: earlier iterations of the invoice and currency projects, kept to show how the solutions evolved.
 

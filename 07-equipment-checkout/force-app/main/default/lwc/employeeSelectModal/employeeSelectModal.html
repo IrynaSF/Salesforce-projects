@@ -1,0 +1,39 @@
+<template>
+
+    <!--Header; the close (X) button is added automatically-->
+    <lightning-modal-header label="Select Employee"></lightning-modal-header>
+
+    <!--Body (dropdown list)-->
+    <lightning-modal-body>
+        <lightning-combobox
+
+        label="Employee"
+        placeholder="Select an employee"
+        options={options}
+        value={selectedEmployeeId}
+        onchange={handleChange}>
+
+       </lightning-combobox>
+    </lightning-modal-body>
+
+    <!--Cancel button-->
+    <lightning-modal-footer>
+        <lightning-button
+
+            label="Cancel"
+            onclick={handleCancel}>
+
+        </lightning-button>
+
+  <!--Next button-->
+        <lightning-button
+        variant="brand"
+        label="Next"
+        disabled={isNextDisabled}
+        onclick={handleNext}
+        class="slds-m-left_x-small">
+
+        </lightning-button>
+    </lightning-modal-footer>
+    
+</template>
