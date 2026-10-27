@@ -1,5 +1,15 @@
 # 07 · Equipment Checkout (Apex + LWC + Flow)
 
+> **In short:** a small Salesforce app for lending office equipment to employees. It tracks who has which device, blocks double checkout, sets due dates automatically, and reminds people about overdue or maintenance returns.
+>
+> **What I built:**
+> - **Data model:** `Equipment__c` and a `Checkout__c` junction object linked to Contacts with two Master-Detail fields
+> - **Apex:** a bulkified trigger + handler (double-checkout validation, status sync), an `@AuraEnabled` controller, and unit tests
+> - **LWC:** a searchable equipment catalog with a `LightningModal` employee picker, and a parent–child "My Equipment" panel
+> - **Flow:** 5 Flows in Flow Builder, covering Screen Flows to issue and return equipment, a before-save Flow for the due date, an after-save Flow for maintenance tasks, and a daily Scheduled Flow for overdue checkouts
+>
+> *Mentor-guided practice project, built in a Developer Edition org (October 2026).*
+
 ## Business scenario
 
 An office lends equipment to employees (laptops, monitors, headsets). The team tracks this in a spreadsheet and often finds out too late that a device is already taken, overdue, or needs maintenance. The goal is to run the whole lending cycle inside Salesforce:
@@ -86,17 +96,44 @@ The Apex trigger and the Flows work together. For example, when a user issues eq
 | LWC | `myEquipmentPanel` / `myCheckoutsList` | Parent–child pair: `@api` property down, custom event up |
 | Flow | 5 Flows | See the table above |
 
-## Screenshots
+## Use cases (screenshots)
 
+### 1. Issue equipment (Screen Flow)
+| Step | Screenshot |
+|------|-----------|
+| On a Contact, the user starts **Issue Equipment** and picks a type | ![](screenshots/uc1-1-pick-type.png) |
+| Data Table shows only *Available* equipment of that type | ![](screenshots/uc1-2-available-table.png) |
+| Confirmation screen: employee + equipment | ![](screenshots/uc1-3-confirm.png) |
+| Result: the equipment is issued, and the due date was set by the before-save Flow | ![](screenshots/uc1-4-result-due-date.png) |
+| **Edge case:** no available equipment of this type (screen validation) | ![](screenshots/uc1-5-none-available.png) |
+
+### 2. Return equipment (Screen Flow)
+| Step | Screenshot |
+|------|-----------|
+| Multi-select table of the employee's open checkouts | ![](screenshots/uc2-1-select-checkouts.png) |
+| Result: "Returned: N item(s)", status back to *Available* | ![](screenshots/uc2-2-returned.png) |
+| **Edge case:** the employee has nothing to return | ![](screenshots/uc2-3-nothing-to-return.png) |
+
+### 3. Automation in the background
+| Case | Screenshot |
+|------|-----------|
+| Due date by type: Laptop +14 days, Monitor +30 days, others +7 (before-save Flow) | ![](screenshots/uc3-due-date-on-record.png) |
+| Equipment set to *Maintenance* creates a "return the equipment" Task (after-save Flow) | ![](screenshots/uc4-maintenance-task.png) |
+| Overdue checkout gets *Is Overdue* checked and a reminder Task (Scheduled Flow) | ![](screenshots/uc5-overdue-flag-task.png) |
+| **Edge case:** double checkout blocked by the Apex trigger | ![](screenshots/uc6-double-checkout-error.png) |
+
+### 4. Lightning Web Components
+| Case | Screenshot |
+|------|-----------|
+| Equipment Catalog: search by type and Check Out | ![](screenshots/uc7-1-catalog.png) |
+| Select Employee modal, then a success toast | ![](screenshots/uc7-2-modal.png) |
+| My Equipment Panel: return from the child component, counter in the parent | ![](screenshots/uc7-3-my-equipment.png) |
+
+### 5. Under the hood
 | | |
 |---|---|
-| **Equipment Catalog (LWC)** | ![Equipment Catalog](screenshots/01-equipment-catalog.png) |
-| **Select Employee modal** | ![Select Employee](screenshots/02-select-employee-modal.png) |
-| **My Equipment Panel (parent + child LWC)** | ![My Equipment Panel](screenshots/03-my-equipment-panel.png) |
-| **Issue Equipment, Screen Flow** | ![Issue Equipment flow](screenshots/04-issue-equipment-flow.png) |
-| **Return Equipment, Screen Flow** | ![Return Equipment flow](screenshots/05-return-equipment-flow.png) |
-| **Flow Builder canvas** | ![Flow Builder](screenshots/06-flow-builder.png) |
-| **Schema Builder: data model** | ![Data model](screenshots/07-data-model.png) |
+| Flow Builder: Return Equipment (Loop + one Update outside the loop) | ![](screenshots/flow-builder-return.png) |
+| Schema Builder: data model | ![](screenshots/data-model.png) |
 
 ## What I learned
 
