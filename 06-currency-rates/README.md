@@ -1,5 +1,11 @@
 # 06 · Currency Rates (scheduled integration with history)
 
+> **In short:** exchange rates from ExchangeRate-API are loaded into Salesforce on a schedule and logged, and an LWC shows the rates for any base currency, now or on a past date.
+>
+> **What I built:** a Scheduled Apex job with `@future(callout=true)`, a Named Credential (External Credential + Principal), the API key in Custom Metadata, a log object with per-currency child records, an LWC with a currency picker and a date picker, and 100% test coverage with `HttpCalloutMock`.
+>
+> *Mentor-guided practice project, built in a Developer Edition org.*
+
 ## Business scenario
 
 An international sales team quotes deals in several currencies and needs **up-to-date exchange rates inside Salesforce**, plus the ability to look up **what the rate was on a given day**. Rates should refresh automatically every day, and every API response should be logged for audit and troubleshooting.
@@ -48,6 +54,12 @@ currencyWidget (LWC)
 - Named Credential `ExchangeRate_Auth` → `https://v6.exchangerate-api.com`
 - A `Currency_Setting__mdt` record with your own API key (the objects and the metadata type are included)
 - Schedule the job, e.g. `System.schedule('Currency Rates Daily', '0 0 7 * * ?', new CurrencyRatesScheduler());`
+
+## Screenshots
+
+| Base currency USD, rates on a selected date | Base currency switched to GBP (cross rates) |
+|---|---|
+| ![Currency rates USD](screenshots/currency-usd-by-date.png) | ![Currency rates GBP](screenshots/currency-gbp-base.png) |
 
 ## What I learned
 

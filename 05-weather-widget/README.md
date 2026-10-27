@@ -1,5 +1,11 @@
 # 05 · Weather Widget (REST API integration)
 
+> **In short:** a home-page widget that shows the current weather for any city by calling the OpenWeatherMap REST API from Apex.
+>
+> **What I built:** an Apex callout through a Named Credential, the API key kept in Custom Metadata, typed JSON wrapper classes, an LWC with a reactive `@wire`, and a callout test with `HttpCalloutMock`.
+>
+> *Mentor-guided practice project, built in a Developer Edition org.*
+
 ## Business scenario
 
 Field sales reps plan visits and want to see **current weather for a city** directly on their Salesforce home page, without leaving the app. This was my first external REST integration from Apex.
@@ -35,6 +41,12 @@ The card shows city and country, temperature, humidity, wind speed and a weather
 - Static Resources for icons: `weatherClear`, `weatherRain`, `weatherSnow`, `weatherClouds`, `weatherThunderstorm`, `weatherFog`, `weatherWind`, `weatherDefault`
 
 > The API key is never hard-coded. It lives in a Custom Metadata record in the org and is not part of this repository.
+
+## Screenshots
+
+| Default city (from Custom Metadata) | After typing a city |
+|---|---|
+| ![Weather: Minneapolis](screenshots/weather-minneapolis.png) | ![Weather: London](screenshots/weather-london.png) |
 
 ## What I learned
 

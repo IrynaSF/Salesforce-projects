@@ -1,0 +1,31 @@
+<template>
+      <lightning-card title="My Equipment">
+        <!-- content blocks -->
+           <!-- Show a spinner while the return is in progress -->
+        <template lwc:if={isLoading}>
+            <lightning-spinner alternative-text="Loading"></lightning-spinner> <!--Standard Salesforce spinner -->
+        </template>
+           <!-- If there are unreturned checkouts, show the list -->
+        <template lwc:if={hasCheckouts}>
+            <template for:each={myCheckouts.data} for:item="item">
+                <div key={item.Id} class="slds-p-horizontal_small slds-p-vertical_x-small slds-grid">
+                    <!-- Equipment name via the __r relationship -->
+                    <p class="slds-col slds-size_1-of-2">{item.Equipment__r.Name}</p>
+                    
+                    <!-- Return button: data-id holds the checkout Id -->
+                    <!--On click JS reads it through event.currentTarget.dataset.id.-->
+                    <lightning-button
+                    class="slds-col slds-size_1-of-2"
+                        label="Return"
+                        data-id={item.Id}  
+                        onclick={handleReturn}>
+                    </lightning-button>
+                </div>
+            </template>
+        </template>
+          <!-- Placeholder text instead of an empty card -->
+        <template lwc:else>
+            <p class="slds-p-horizontal_small">No equipment checked out</p>
+        </template>
+    </lightning-card>
+</template>

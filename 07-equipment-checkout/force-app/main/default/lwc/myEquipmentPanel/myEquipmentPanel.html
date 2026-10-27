@@ -1,0 +1,29 @@
+<template>
+    <lightning-card title="My Equipment Panel">
+        <div class="slds-p-horizontal_small">
+            <!-- Employee picker -->
+            <lightning-combobox
+                label="Employee"
+                placeholder="Select an employee"
+                options={contactOptions}
+                value={selectedContactId}
+                onchange={handleContactChange}>
+            </lightning-combobox>
+
+            <!-- Returns counter -->
+            <p class="slds-m-top_small">Returned this session: {stats.lastReturnedCount}</p>
+        </div>
+
+        <!-- If an employee is selected, show the child component -->
+        <template lwc:if={hasSelectedContact}>
+            <c-my-checkouts-list
+                contact-id={selectedContactId}
+                onreturned={handleReturned}>
+            </c-my-checkouts-list>
+        </template>
+        <template lwc:else>
+            <!-- Otherwise show a hint -->
+            <p class="slds-p-around_small">Please select an employee to see their equipment</p>
+        </template>
+    </lightning-card>
+</template>

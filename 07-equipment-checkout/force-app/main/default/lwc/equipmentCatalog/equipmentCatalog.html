@@ -1,0 +1,25 @@
+<template>
+    <!--Catalog card -->
+    <lightning-card title="Equipment Catalog" icon-name="standard:product">
+        <div class="slds-p-horizontal_medium">
+                <!--Search field -->
+    <lightning-input
+    type="search"
+    label="Search by type"
+    value={searchKey}
+    onchange={handleSearchChange}
+    class="slds-m-bottom_small"
+></lightning-input>
+
+         <lightning-datatable
+            key-field="Id"
+            data={filteredEquipment}
+            columns={columns}
+            hide-checkbox-column
+            onrowaction={handleRowAction}>
+         </lightning-datatable>
+        </div>
+ 
+       </lightning-card>
+
+</template>

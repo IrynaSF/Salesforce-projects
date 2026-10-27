@@ -1,5 +1,11 @@
 # 02 · Sales Dashboard
 
+> **In short:** one Lightning Web Component that shows which customers actually brought revenue. It lists accounts with Closed Won deals, with search, pagination and a products drill-down, and the same component also works on an Account record page.
+>
+> **What I built:** an Apex controller with parent-child SOQL and a wrapper class, an LWC with search, pagination and row actions, and Apex unit tests with a test data factory.
+>
+> *Mentor-guided practice project, built in a Developer Edition org.*
+
 ## Business scenario
 
 Sales managers want a quick view of **which customers actually brought revenue** without building reports. The same component should work in two places:
@@ -18,6 +24,7 @@ salesDashboard (LWC)
  │                                  └─ Accounts WHERE Id IN (won Opportunities)
  │                                     + child subquery of Closed Won Opportunities
  │                                     → List<AccountWrapper> with totalClosedAmount
+ ├─ lightning-accordion → one section per account, its won deals in a lightning-datatable
  ├─ search box  → client-side filter of accounts by name
  ├─ pagination  → 10 accounts per page (getter-based slicing)
  └─ row action "Preview Products" → getProducts(opportunityId) → modal with lightning-datatable
@@ -30,6 +37,12 @@ salesDashboard (LWC)
 | Apex | `SalesDashboardController` | Three `@AuraEnabled(cacheable=true)` methods; inner `AccountWrapper` class aggregates won amount per account |
 | Apex | `SalesDashboardControllerTest` | Test data factory for accounts, opportunities, pricebook entries and line items; covers both modes |
 | LWC | `salesDashboard` | Dual-mode UI (tab vs record page via `recordId`), search, pagination, datatable row actions, modal |
+
+## Screenshots
+
+**App tab:** accounts with Closed Won deals, search by client name, expanded account with its won opportunities, Prev / Next pagination
+
+![Sales Dashboard](screenshots/sales-dashboard.png)
 
 ## What I learned
 
