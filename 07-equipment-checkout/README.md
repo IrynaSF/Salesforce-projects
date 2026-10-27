@@ -82,6 +82,8 @@ myEquipmentPanel (parent, App page)
 | **Equipment Maintenance Notify** | Record-Triggered, **after save**, on update of `Equipment__c` | Runs only when `Status__c` changes to *Maintenance*. Finds the open checkout of that device and creates a Task for the employee's owner: *"Return the equipment: it is being sent for maintenance"*. |
 | **Checkout Overdue Check** | **Scheduled** Flow, daily | For open checkouts not yet flagged: if `Due_Date__c < TODAY`, it creates a reminder Task (with a formula subject) and sets `Is_Overdue__c = true`, so each overdue checkout gets only one reminder. |
 
+Flow metadata is in [`force-app/main/default/flows`](force-app/main/default/flows) (Return Equipment, Checkout Set Due Date, Equipment Maintenance Notify, Checkout Overdue Check).
+
 The Apex trigger and the Flows work together. For example, when a user issues equipment through the Screen Flow, the trigger still blocks double checkout and sets *In Use*, and the before-save Flow sets the due date.
 
 ## Components

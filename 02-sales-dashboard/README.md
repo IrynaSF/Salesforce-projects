@@ -24,6 +24,7 @@ salesDashboard (LWC)
  │                                  └─ Accounts WHERE Id IN (won Opportunities)
  │                                     + child subquery of Closed Won Opportunities
  │                                     → List<AccountWrapper> with totalClosedAmount
+ ├─ lightning-accordion → one section per account, its won deals in a lightning-datatable
  ├─ search box  → client-side filter of accounts by name
  ├─ pagination  → 10 accounts per page (getter-based slicing)
  └─ row action "Preview Products" → getProducts(opportunityId) → modal with lightning-datatable
